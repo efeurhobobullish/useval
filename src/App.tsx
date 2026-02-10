@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 import { ScrollToTop } from "@/components/ui";
-import { Auth } from "./pages/auth";
+import { Auth, Verify } from "./pages/auth";
 import { Card, CreateCard, Gift, Home, Success, Wallet } from "./pages/main";
 
 export default function App() {
@@ -11,6 +11,7 @@ export default function App() {
       <Toaster position="top-center" richColors />
       <Routes>
         <Route path="/" element={<Auth />} />
+        <Route path="/verify" element={<Verify />} />
         <Route path="/home" element={<Home />} />
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/create" element={<CreateCard />} />
