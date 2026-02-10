@@ -9,7 +9,7 @@ export type User = {
   isAdmin?: boolean;
 };
 
-export const useAuth = () => {
+const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -71,3 +71,5 @@ export const useAuth = () => {
     refetchAuth: checkAuth,
   };
 };
+
+export default useAuth;
