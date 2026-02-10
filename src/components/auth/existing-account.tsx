@@ -3,18 +3,21 @@ import { Call, LockSlash } from "iconsax-reactjs";
 import { ButtonWithLoader, InputWithIcon } from "../ui";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "@/config/api";
 import { toast } from "sonner";
+
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ExistingAccount() {
   const navigate = useNavigate();
+  const { requestOtp } = useAuth();
+
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!phone) {
+    if (!phone.trim()) {
       toast.error("Phone number is required");
       return;
     }
@@ -22,9 +25,7 @@ export default function ExistingAccount() {
     try {
       setLoading(true);
 
-      await axios.post("/auth/otp/request", {
-        phone,
-      });
+      await requestOtp(phone);
 
       toast.success("Verification code sent");
       navigate(`/verify?phone=${encodeURIComponent(phone)}`);
