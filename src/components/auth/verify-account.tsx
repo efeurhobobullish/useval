@@ -3,15 +3,17 @@ import { useEffect, useState } from "react";
 import { Call, ShieldTick, LockSlash } from "iconsax-reactjs";
 import { ButtonWithLoader, InputWithIcon } from "../ui";
 import { toast } from "sonner";
-import axios from "@/config/api";
 import { useNavigate } from "react-router-dom";
+
+import { useAuth } from "@/hooks";
 
 export default function VerifyAccount() {
   const navigate = useNavigate();
+  const { verifyOtp, resendOtp } = useAuth();
 
-  const [phone, setPhone] = useState<string>("");
-  const [code, setCode] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -26,9 +28,7 @@ export default function VerifyAccount() {
     setPhone(value);
   }, [navigate]);
 
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!code.trim()) {
@@ -36,23 +36,30 @@ export default function VerifyAccount() {
       return;
     }
 
-    setLoading(true);
-
     try {
-      await axios.post("/v1/auth/verify", {
-        phone,
-        code,
-      });
+      setLoading(true);
+
+      await verifyOtp({ phone, code });
 
       toast.success("Account verified successfully");
-
       navigate("/home");
     } catch (error: any) {
-      const message =
-        error?.response?.data?.message || "Verification failed";
-      toast.error(message);
+      toast.error(
+        error?.response?.data?.message || "Verification failed"
+      );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    try {
+      await resendOtp(phone);
+      toast.success("New verification code sent");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message || "Unable to resend code"
+      );
     }
   };
 
@@ -100,6 +107,14 @@ export default function VerifyAccount() {
         loading={loading}
         className="w-full btn-primary h-11 rounded-lg text-sm font-semibold"
       />
+
+      <button
+        type="button"
+        onClick={handleResend}
+        className="w-full text-sm text-primary font-medium"
+      >
+        Resend code
+      </button>
     </form>
   );
 }
