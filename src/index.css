@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=BBH+Hegarty&family=Manrope:wght@200..800&family=Space+Grotesk:wght@300..700&display=swap');
+
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #ffffff;
+  --secondary: #f9f9f9;
+  --foreground: #f5f5f5;
+  --main: #444;
+  --muted: #6B6C73;
+  --primary: #eb2fde;
+  --line: #ededed;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #212121;
+  --main: #fefefe;
+  --secondary: #121212;
+  --muted: #999999;
+  --line: #212121;
+  --primary: mediumseagreen;
+}
+
+@theme inline {
+  --font-sans: "Manrope", sans-serif;
+  --font-space: "Space Grotesk", serif;
+  --font-bbh: "BBH Hegarty", sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-secondary: var(--secondary);
+  --color-main: var(--main);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-primary: var(--primary);
+}
+
+*{
+  @apply outline-none
+}
+
+body {
+ @apply bg-background text-main font-space;
+}
+
+.main {
+  @apply max-w-[90%] 2xl:max-w-[1280px] mx-auto;
+}
+
+.layout {
+  @apply max-w-[90%] md:max-w-[900px] mx-auto;
+}
+.container {
+  @apply max-w-[100%] md:max-w-[500px] mx-auto;
+}
+
+.center {
+  @apply flex items-center justify-center;
+}
+
+button,
+.btn {
+  @apply cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50;
+}
+
+.btn-primary {
+  @apply text-white bg-primary font-semibold;
+}
+.btn-secondary {
+  @apply  bg-secondary font-semibold;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  @apply hidden;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  @apply hidden;
+}
+
+.scrollbar::-webkit-scrollbar {
+  @apply bg-secondary w-1;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-primary/40 rounded-full ;
+}
+
