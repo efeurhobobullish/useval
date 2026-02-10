@@ -17,6 +17,7 @@ export default function Home() {
 
   const avatars = [
     "Gift Jacksun",
+    "Empire Tech",
     "Amaka Bello",
     "Tunde Ajayi",
     "Sarah Kim",
