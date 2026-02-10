@@ -10,7 +10,7 @@ export type Transaction = {
   createdAt: string;
 };
 
-export const useWalletDashboard = () => {
+const useWalletDashboard = () => {
   const [balance, setBalance] = useState(0);
   const [firstName, setFirstName] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -45,3 +45,5 @@ export const useWalletDashboard = () => {
     loading,
   };
 };
+
+export default useWalletDashboard;
