@@ -3,7 +3,7 @@ import { Call, LockSlash } from "iconsax-reactjs";
 import { ButtonWithLoader, InputWithIcon } from "../ui";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "@/lib/axios";
+import axios from "@/config/api";
 import { toast } from "sonner";
 
 export default function ExistingAccount() {
