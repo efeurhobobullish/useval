@@ -1,6 +1,6 @@
-import { NewAccount, ExistingAccount } from "@/components/auth"
-import { Heart } from "iconsax-reactjs"
-import { useEffect, useState } from "react"
+import { VerifyAccount } from "@/components/auth";
+import { Heart } from "iconsax-reactjs";
+import { useEffect, useState } from "react";
 
 const avatars = [
   "Gift Jacksun",
@@ -9,28 +9,21 @@ const avatars = [
   "Tunde Ajayi",
   "Sarah Kim",
   "John Doe",
-]
+];
 
 export default function Auth() {
-  const [activeTab, setActiveTab] = useState("new")
-  const [count, setCount] = useState(0)
-
-  const target = 21
+  const [count, setCount] = useState(0);
+  const target = 21;
 
   useEffect(() => {
-    if (count >= target) return
+    if (count >= target) return;
 
     const timer = setTimeout(() => {
-      setCount((prev) => prev + 1)
-    }, 60)
+      setCount((prev) => prev + 1);
+    }, 60);
 
-    return () => clearTimeout(timer)
-  }, [count])
-
-  const tabs = [
-    { id: "new", label: "New" },
-    { id: "existing", label: "Existing" },
-  ]
+    return () => clearTimeout(timer);
+  }, [count]);
 
   return (
     <div className="min-h-[100dvh] inset-0 bg-gradient-to-br from-primary to-amber-500 flex items-end pt-40">
@@ -46,12 +39,11 @@ export default function Auth() {
             </p>
 
             <h1 className="text-4xl font-bold text-center">
-              Welcome to Useval
+              Verify your account
             </h1>
 
             <p className="text-muted text-sm text-center">
-              Build and share Valentine cards, send real airtime gifts, and track
-              responses in one place
+              Enter the code sent to your WhatsApp number to continue
             </p>
           </div>
 
@@ -60,7 +52,9 @@ export default function Auth() {
               {avatars.map((name, i) => (
                 <img
                   key={i}
-                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`}
+                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                    name
+                  )}&background=random`}
                   alt={name}
                   className="h-9 w-9 rounded-full border-4 border-white"
                 />
@@ -74,27 +68,11 @@ export default function Auth() {
 
           <div className="min-h-[500px]">
             <div className="border border-line rounded-2xl p-4 space-y-6 mb-10">
-              <div className="flex gap-2 bg-secondary rounded-xl p-2">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`px-4 py-2 rounded-lg text-sm font-semibold flex-1 ${
-                      activeTab === tab.id
-                        ? "bg-primary text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-
-              {activeTab === "new" ? <NewAccount /> : <ExistingAccount />}
+              <VerifyAccount />
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
