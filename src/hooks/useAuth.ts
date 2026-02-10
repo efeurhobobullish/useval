@@ -16,32 +16,32 @@ const useAuth = () => {
 
   const register = async (payload: { fullName: string; phone: string }) => {
     setError(null);
-    const res = await api.post("/auth/register", payload);
+    const res = await api.post("/v1/auth/register", payload);
     return res.data;
   };
 
   const requestOtp = async (phone: string) => {
     setError(null);
-    const res = await api.post("/auth/otp/request", { phone });
+    const res = await api.post("/v1/auth/otp/request", { phone });
     return res.data;
   };
 
   const resendOtp = async (phone: string) => {
     setError(null);
-    const res = await api.post("/auth/otp/resend", { phone });
+    const res = await api.post("/v1/auth/otp/resend", { phone });
     return res.data;
   };
 
   const verifyOtp = async (payload: { phone: string; code: string }) => {
     setError(null);
-    const res = await api.post("/auth/otp/verify", payload);
+    const res = await api.post("/v1/auth/otp/verify", payload);
     setUser(res.data.user);
     return res.data;
   };
 
   const checkAuth = async () => {
     try {
-      const res = await api.get("/auth/check");
+      const res = await api.get("/v1/auth/check");
       setUser(res.data.user);
     } catch {
       setUser(null);
@@ -51,7 +51,7 @@ const useAuth = () => {
   };
 
   const logout = async () => {
-    await api.post("/auth/logout");
+    await api.post("/v1/auth/logout");
     setUser(null);
   };
 
