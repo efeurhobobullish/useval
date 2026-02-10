@@ -10,12 +10,19 @@ import {
   InfoCircle,
 } from "iconsax-reactjs";
 import { Link } from "react-router-dom";
+import { useWalletDashboard } from "@/hooks";
 
 export default function Home() {
-  const walletBalance = 2500;
-  const totalCards = 0;
-  const acceptedCards = 0;
-  const totalSenders = 21;
+  const {
+    balance,
+    firstName,
+    transactions,
+    loading,
+  } = useWalletDashboard();
+
+  const totalCards = 0; // replace when cards API is ready
+  const acceptedCards = 0; // replace when cards API is ready
+  const totalSenders = transactions.length;
 
   const avatars = [
     "Gift Jacksun",
@@ -30,7 +37,7 @@ export default function Home() {
     <MainLayout>
       <div className="space-y-1 flex md:items-center justify-between md:flex-row flex-col">
         <h3 className="text-xl font-bold">
-          Hey, <span className="text-muted">Jackson</span> 👋
+          Hey, <span className="text-muted">{firstName || "There"}</span> 👋
         </h3>
 
         <div className="flex md:flex-row flex-col md:items-center md:gap-3 gap-2 mt-3 flex-wrap">
@@ -53,6 +60,7 @@ export default function Home() {
               end={totalSenders}
               duration={2}
               separator=","
+              preserveValue
             />
             + people already sent Valentine gifts
           </p>
@@ -78,12 +86,15 @@ export default function Home() {
                 <p className="text-muted text-xs">Wallet Balance</p>
                 <h4 className="font-bold text-lg">
                   ₦
-                  <CountUp
-                    start={0}
-                    end={walletBalance}
-                    duration={1.8}
-                    separator=","
-                  />
+                  {!loading && (
+                    <CountUp
+                      start={0}
+                      end={balance}
+                      duration={1.8}
+                      separator=","
+                      preserveValue
+                    />
+                  )}
                 </h4>
               </div>
             </div>
@@ -142,4 +153,4 @@ export default function Home() {
       </div>
     </MainLayout>
   );
-}
+    }
