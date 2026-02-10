@@ -3,17 +3,22 @@ import { ButtonWithLoader, InputWithIcon } from "../ui";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "@/config/api";
+import { toast } from "sonner";
 
 export default function NewAccount() {
   const navigate = useNavigate();
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const [fullName, setFullName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!fullName || !phone) return;
+    if (!fullName.trim() || !phone.trim()) {
+      toast.error("Please enter your name and phone number");
+      return;
+    }
 
     setLoading(true);
 
@@ -27,9 +32,14 @@ export default function NewAccount() {
         phone,
       });
 
+      toast.success("Verification code sent to WhatsApp");
+
       navigate(`/verify?phone=${encodeURIComponent(phone)}`);
-    } catch (error) {
-      // handle error toast here
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message || "Something went wrong";
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -39,7 +49,7 @@ export default function NewAccount() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <p className="text-muted text-sm">
         Create your account with your phone number. A verification code will be
-        sent to WhatsApp.
+        sent to your WhatsApp.
       </p>
 
       <InputWithIcon
