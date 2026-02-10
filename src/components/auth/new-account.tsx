@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Call, User, ShieldTick } from "iconsax-reactjs";
+import { Call, User, LockSlash } from "iconsax-reactjs";
 import { toast } from "sonner";
 
 import axios from "@/config/api";
@@ -51,8 +51,7 @@ export default function NewAccount() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <p className="text-muted text-sm">
-        Create your account with your phone number. A verification code will be
-        sent to your WhatsApp.
+        Create your account with your phone number.
       </p>
 
       <InputWithIcon
@@ -75,13 +74,13 @@ export default function NewAccount() {
         className="bg-secondary"
       />
 
-      <div className="flex gap-2 bg-secondary border border-line rounded-lg p-2">
-        <ShieldTick
+      <div className="flex gap-2 bg-yellow-50 border border-yellow-200 rounded-lg p-2">
+        <LockSlash
           size={17}
           variant="Bulk"
-          className="flex-shrink-0 text-primary"
+          className="flex-shrink-0 text-yellow-700"
         />
-        <p className="text-xs text-muted">
+        <p className="text-xs text-yellow-700">
           A 6 digit verification code will be sent to your WhatsApp number.
         </p>
       </div>
