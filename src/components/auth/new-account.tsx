@@ -1,9 +1,11 @@
-import { Call, User, ShieldTick } from "iconsax-reactjs";
-import { ButtonWithLoader, InputWithIcon } from "../ui";
+import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "@/config/api";
+import { Call, User, ShieldTick } from "iconsax-reactjs";
 import { toast } from "sonner";
+
+import axios from "@/config/api";
+import { ButtonWithLoader, InputWithIcon } from "../ui";
 
 export default function NewAccount() {
   const navigate = useNavigate();
@@ -12,7 +14,9 @@ export default function NewAccount() {
   const [phone, setPhone] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
 
     if (!fullName.trim() || !phone.trim()) {
@@ -38,7 +42,6 @@ export default function NewAccount() {
     } catch (error: any) {
       const message =
         error?.response?.data?.message || "Something went wrong";
-
       toast.error(message);
     } finally {
       setLoading(false);
