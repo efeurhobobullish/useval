@@ -46,7 +46,7 @@ export default function VerifyAccount() {
 
       toast.success("Account verified successfully");
 
-      navigate("/cards");
+      navigate("/home");
     } catch (error: any) {
       const message =
         error?.response?.data?.message || "Verification failed";
