@@ -4,19 +4,18 @@ import { useNavigate } from "react-router-dom";
 import { Call, User, LockSlash } from "iconsax-reactjs";
 import { toast } from "sonner";
 
-import axios from "@/config/api";
+import { useAuth } from "@/hooks";
 import { ButtonWithLoader, InputWithIcon } from "../ui";
 
 export default function NewAccount() {
   const navigate = useNavigate();
+  const { register, requestOtp } = useAuth();
 
-  const [fullName, setFullName] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!fullName.trim() || !phone.trim()) {
@@ -27,17 +26,10 @@ export default function NewAccount() {
     setLoading(true);
 
     try {
-      await axios.post("/v1/auth/register", {
-        fullName,
-        phone,
-      });
-
-      await axios.post("/v1/auth/request-otp", {
-        phone,
-      });
+      await register({ fullName, phone });
+      await requestOtp(phone);
 
       toast.success("Verification code sent to WhatsApp");
-
       navigate(`/verify?phone=${encodeURIComponent(phone)}`);
     } catch (error: any) {
       const message =
