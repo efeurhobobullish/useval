@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { MainLayout } from "@/layouts";
 import { formatDate } from "@/helpers/formatDate";
 import { formatNumber } from "@/helpers/formatNumber";
+import { MainLayout } from "@/layouts";
 import {
   Wallet as WalletIcon,
   ArrowUp,
@@ -13,30 +13,17 @@ import { toast } from "sonner";
 import { useWallet } from "@/hooks";
 
 export default function Wallet() {
-  const { balance, transactions, user } = useWallet();
+  const { balance, transactions } = useWallet();
 
   const accountNumber = "8137411338";
-  const accountName = user?.fullName || "Gift Uwem Jackson";
+  const accountName = "Gift Uwem Jackson";
   const bankName = "OPay";
 
   const [copied, setCopied] = useState(false);
 
-  const copyAccountNumber = async () => {
+  const handleCopy = async () => {
     try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(accountNumber);
-      } else {
-        const textarea = document.createElement("textarea");
-        textarea.value = accountNumber;
-        textarea.style.position = "fixed";
-        textarea.style.left = "-999999px";
-        document.body.appendChild(textarea);
-        textarea.focus();
-        textarea.select();
-        document.execCommand("copy");
-        textarea.remove();
-      }
-
+      await navigator.clipboard.writeText(accountNumber);
       setCopied(true);
       toast.success("Account number copied");
       setTimeout(() => setCopied(false), 2000);
@@ -70,7 +57,7 @@ export default function Wallet() {
               <p className="text-sm font-semibold">{bankName} Account</p>
 
               <button
-                onClick={copyAccountNumber}
+                onClick={handleCopy}
                 className="h-9 w-9 rounded-full bg-secondary center hover:bg-primary/10 transition"
               >
                 {copied ? (
@@ -121,7 +108,7 @@ export default function Wallet() {
 
                   <div>
                     <p className="text-sm font-medium capitalize">
-                      {tx.title}
+                      {tx.type}
                     </p>
                     <p className="text-xs text-muted">
                       {formatDate(new Date(tx.createdAt))}
