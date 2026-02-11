@@ -56,23 +56,24 @@ const useValentines = () => {
   };
 
   /* CREATE */
-  const createValentine = async (payload: {
-    recipientName: string;
-    pickupLine?: string;
-    thankYouMessage?: string;
-    sendAirtime: boolean;
-    amount?: number;
-  }) => {
-    setCreating(true);
-    try {
-      const res = await api.post("/v1/valentine", payload);
-      await fetchValentines();
-      await fetchStats();
-      return res.data;
-    } finally {
-      setCreating(false);
-    }
-  };
+  /* CREATE */
+const createValentine = async (payload: {
+  loversName: string;
+  pickupLine?: string;
+  thankYouMessage?: string;
+  sendAirtime: boolean;
+  amount?: number;
+}) => {
+  setCreating(true);
+  try {
+    const res = await api.post("/v1/valentine", payload);
+    await fetchValentines();
+    await fetchStats();
+    return res.data;
+  } finally {
+    setCreating(false);
+  }
+};
 
   /* GET BY ID */
   const getMyValentineById = async (id: string) => {
