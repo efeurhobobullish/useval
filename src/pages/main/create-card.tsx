@@ -5,52 +5,56 @@ import { CardEdit, User } from "iconsax-reactjs";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import useCreateValentine from "@/hooks/useCreateValentine";
+import { useValentines } from "@/hooks";
 
 export default function CreateCard() {
   const navigate = useNavigate();
-  const { createValentine, loading } = useCreateValentine();
+  const { createValentine, loading } = useValentines();
 
-  const [recipientName, setRecipientName] = useState("");
+  const [loversName, setLoversName] = useState("");
   const [pickupLine, setPickupLine] = useState("");
   const [thankYouMessage, setThankYouMessage] = useState("");
   const [sendAirtime, setSendAirtime] = useState(false);
   const [amount, setAmount] = useState(500);
 
-  
-      const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  if (!recipientName.trim()) {
-    toast.error("Recipient name is required");
-    return;
-  }
+    if (!loversName.trim()) {
+      toast.error("Lover name is required");
+      return;
+    }
 
-  try {
-    const payload = {
-      recipientName,
-      pickupLine,
-      thankYouMessage,
-      sendAirtime,
-      amount: sendAirtime ? amount : 0,
-    };
+    if (sendAirtime && (!amount || amount <= 0)) {
+      toast.error("Enter valid airtime amount");
+      return;
+    }
 
-    await createValentine(payload);
+    try {
+      await createValentine({
+        loversName,
+        pickupLine,
+        thankYouMessage,
+        sendAirtime,
+        amount: sendAirtime ? amount : 0,
+      });
 
-    toast.success("Valentine card created 💖");
+      toast.success("Valentine card created");
 
-    navigate("/home");
-  } catch (err: any) {
-    toast.error(err?.response?.data?.message || "Something went wrong");
-  }
-};
+      navigate("/home");
+    } catch (err: any) {
+      toast.error(
+        err?.response?.data?.message || "Unable to create card"
+      );
+    }
+  };
 
   return (
     <MainLayout>
       <div className="space-y-1">
         <h2 className="text-xl font-bold">Create a Valentine Card</h2>
         <p className="text-sm text-muted">
-          Write something sweet and make someone smile today 💖
+          Write something sweet and make someone smile.
         </p>
       </div>
 
@@ -61,32 +65,32 @@ export default function CreateCard() {
           placeholder="e.g. Amaka"
           icon={<User size={20} />}
           className="bg-secondary"
-          value={recipientName}
-          onChange={(e) => setRecipientName(e.target.value)}
+          value={loversName}
+          onChange={(e) => setLoversName(e.target.value)}
         />
 
         <div className="space-y-1 flex flex-col">
           <label className="text-sm text-muted font-medium">
-            Pickup Line - Optional
+            Pickup Line
           </label>
           <textarea
             rows={3}
             value={pickupLine}
             onChange={(e) => setPickupLine(e.target.value)}
-            placeholder="e.g You are the water in my well..."
+            placeholder="Optional"
             className="input resize-none bg-secondary p-4 w-full rounded-lg text-sm border border-line focus:border-primary focus:ring-4 focus:ring-primary/10"
           />
         </div>
 
         <div className="space-y-1 flex flex-col">
           <label className="text-sm text-muted font-medium">
-            Thank you message - Optional
+            Thank You Message
           </label>
           <textarea
             rows={3}
             value={thankYouMessage}
             onChange={(e) => setThankYouMessage(e.target.value)}
-            placeholder="e.g I am so grateful for bla bla bla..."
+            placeholder="Optional"
             className="input resize-none bg-secondary p-4 w-full rounded-lg text-sm border border-line focus:border-primary focus:ring-4 focus:ring-primary/10"
           />
         </div>
@@ -95,7 +99,7 @@ export default function CreateCard() {
           <div>
             <p className="text-sm font-semibold">Send Airtime Gift</p>
             <p className="text-xs text-muted">
-              Surprise them with a small reward
+              Deduct from wallet
             </p>
           </div>
 
@@ -119,7 +123,9 @@ export default function CreateCard() {
 
         {sendAirtime && (
           <div className="space-y-2">
-            <label className="text-sm font-medium">Select Amount</label>
+            <label className="text-sm font-medium">
+              Select Amount
+            </label>
 
             <div className="grid grid-cols-3 gap-2">
               {[200, 500, 1000].map((amt) => (
@@ -142,7 +148,7 @@ export default function CreateCard() {
             <InputWithIcon
               type="number"
               icon={<CardEdit size={20} />}
-              placeholder="Custom amount e.g 250"
+              placeholder="Custom amount"
               className="bg-secondary"
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
@@ -151,7 +157,7 @@ export default function CreateCard() {
         )}
 
         <ButtonWithLoader
-          initialText="Create Valentine Card 💌"
+          initialText="Create Valentine Card"
           loadingText="Creating..."
           loading={loading}
           className="w-full btn-primary h-11 rounded-xl text-sm font-semibold"
