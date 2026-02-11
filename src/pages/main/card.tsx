@@ -1,14 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { CardLayout } from "@/layouts";
 
 export default function Card() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const yesRef = useRef<HTMLButtonElement | null>(null);
 
   const card = {
-    recipient: "Anita",
+    recipient: "Blessing",
     pickupLine: "Are you WiFi? Because I'm feeling the connection 😌",
     hasAirtime: true,
   };
@@ -18,7 +17,7 @@ export default function Card() {
   const [merged, setMerged] = useState(false);
 
   const jumpRandomly = () => {
-    const randomX = Math.random() * 250 - 125;
+    const randomX = Math.random() * 260 - 130;
     const randomY = Math.random() * 120 - 60;
 
     setPosition({
@@ -27,11 +26,10 @@ export default function Card() {
     });
   };
 
-  const mergeIntoYes = () => {
-    if (!yesRef.current) return;
-
+  const surrender = () => {
+    // Move close to YES but leave small visible edge
     setPosition({
-      x: -80,
+      x: -95,
       y: 0,
     });
 
@@ -41,11 +39,11 @@ export default function Card() {
   const handleNoClick = () => {
     if (merged) return;
 
-    const nextCount = clickCount + 1;
-    setClickCount(nextCount);
+    const next = clickCount + 1;
+    setClickCount(next);
 
-    if (nextCount >= 6) {
-      mergeIntoYes();
+    if (next >= 7) {
+      surrender();
     } else {
       jumpRandomly();
     }
@@ -73,16 +71,15 @@ export default function Card() {
       </div>
 
       <div className="relative mt-10 h-32 flex items-center justify-center gap-6 overflow-hidden">
-        {/* YES - LEFT */}
+        {/* YES */}
         <button
-          ref={yesRef}
           onClick={handleYes}
           className="btn bg-primary -translate-x-20 text-white px-8 py-3 rounded-xl font-semibold relative z-20"
         >
           Yes ❤️
         </button>
 
-        {/* NO - RIGHT */}
+        {/* NO */}
         <button
           onClick={handleNoClick}
           style={{
@@ -95,7 +92,7 @@ export default function Card() {
       </div>
 
       <p className="text-xs text-muted mt-6 text-center">
-        Keep trying 😏
+        Keep clicking 😏
       </p>
 
       <p className="text-xs text-muted mt-6 text-center">
