@@ -15,12 +15,7 @@ import { useWallet, useValentines } from "@/hooks";
 export default function Home() {
   const { balance = 0, loading: walletLoading } = useWallet();
 
-  const {
-    stats,
-    valentines,
-    loading: valentineLoading,
-  } = useValentines();
-
+  const { stats, valentines } = useValentines();
   const totalSenders = valentines.length;
 
   const avatars = [
