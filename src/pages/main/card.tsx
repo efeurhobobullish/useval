@@ -29,7 +29,7 @@ export default function Card() {
   const surrender = () => {
     // Move close to YES but leave small visible edge
     setPosition({
-      x: -95,
+      x: -110,
       y: 0,
     });
 
@@ -71,7 +71,7 @@ export default function Card() {
       </div>
 
       <div className="relative mt-10 h-32 flex items-center justify-center gap-6 overflow-hidden">
-        {/* YES */}
+        {/* YES - fixed left */}
         <button
           onClick={handleYes}
           className="btn bg-primary -translate-x-20 text-white px-8 py-3 rounded-xl font-semibold relative z-20"
@@ -79,7 +79,7 @@ export default function Card() {
           Yes ❤️
         </button>
 
-        {/* NO */}
+        {/* NO - fixed right initially */}
         <button
           onClick={handleNoClick}
           style={{
@@ -92,7 +92,7 @@ export default function Card() {
       </div>
 
       <p className="text-xs text-muted mt-6 text-center">
-        Keep clicking 😏
+        Try if you dare 😏
       </p>
 
       <p className="text-xs text-muted mt-6 text-center">
