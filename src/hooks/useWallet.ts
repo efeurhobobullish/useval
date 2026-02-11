@@ -3,6 +3,7 @@ import api from "@/config/api";
 
 const useWallet = () => {
   const [balance, setBalance] = useState(0);
+  const [fullName, setFullName] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [fundingLoading, setFundingLoading] = useState(false);
 
@@ -12,11 +13,13 @@ const useWallet = () => {
 
       const res = await api.get("/v1/users/me");
 
-      const walletBalance = res.data?.user?.wallet || 0;
+      const user = res.data?.user;
 
-      setBalance(walletBalance);
+      setBalance(user?.wallet || 0);
+      setFullName(user?.fullName || "");
     } catch (error) {
       setBalance(0);
+      setFullName("");
     } finally {
       setLoading(false);
     }
@@ -44,6 +47,7 @@ const useWallet = () => {
 
   return {
     balance,
+    fullName,
     loading,
     fundingLoading,
     fundWallet,
