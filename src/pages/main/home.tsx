@@ -3,7 +3,7 @@ import { History } from "@/components/main";
 import { MainLayout } from "@/layouts";
 import {
   BoxAdd,
-  Wallet,
+  Wallet as WalletIcon,
   Heart,
   TickCircle,
   CloseCircle,
@@ -11,11 +11,16 @@ import {
   InfoCircle,
 } from "iconsax-reactjs";
 import { Link } from "react-router-dom";
-import { useWalletDashboard } from "@/hooks";
+import { useWalletDashboard, useWallet } from "@/hooks";
 
 export default function Home() {
-  const { balance, firstName, transactions, stats, loading } =
-    useWalletDashboard();
+  const { balance = 0, loading: walletLoading } = useWallet();
+
+  const {
+    firstName,
+    transactions = [],
+    stats = { total: 0, accepted: 0, pending: 0, rejected: 0 },
+  } = useWalletDashboard();
 
   const totalSenders = transactions.length;
 
@@ -75,17 +80,18 @@ export default function Home() {
 
       <div className="bg-secondary p-2 rounded-2xl space-y-3">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-          {/* Wallet */}
+
+          {/* Wallet Balance from useWallet */}
           <div className="bg-white col-span-2 md:col-span-1 rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 center">
-                <Wallet size={20} className="text-primary" />
+                <WalletIcon size={20} className="text-primary" />
               </div>
               <div>
                 <p className="text-muted text-xs">Wallet Balance</p>
                 <h4 className="font-bold text-lg">
                   ₦
-                  {!loading && (
+                  {!walletLoading ? (
                     <CountUp
                       start={0}
                       end={balance}
@@ -93,6 +99,8 @@ export default function Home() {
                       separator=","
                       preserveValue
                     />
+                  ) : (
+                    "0"
                   )}
                 </h4>
               </div>
@@ -164,7 +172,7 @@ export default function Home() {
           to="/wallet"
           className="btn bg-primary/20 text-primary font-semibold text-sm px-4 h-10 rounded-lg flex items-center gap-2 w-fit"
         >
-          <Wallet size={18} />
+          <WalletIcon size={18} />
           Fund Wallet
         </Link>
       </div>
