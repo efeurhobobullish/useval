@@ -9,9 +9,9 @@ import { useValentines } from "@/hooks";
 
 export default function CreateCard() {
   const navigate = useNavigate();
-  const { createValentine, loading } = useValentines();
+  const { createValentine, creating } = useValentines();
 
-  const [loversName, setLoversName] = useState("");
+  const [recipientName, setRecipientName] = useState("");
   const [pickupLine, setPickupLine] = useState("");
   const [thankYouMessage, setThankYouMessage] = useState("");
   const [sendAirtime, setSendAirtime] = useState(false);
@@ -20,7 +20,7 @@ export default function CreateCard() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!loversName.trim()) {
+    if (!recipientName.trim()) {
       toast.error("Lover name is required");
       return;
     }
@@ -32,7 +32,7 @@ export default function CreateCard() {
 
     try {
       await createValentine({
-        loversName,
+        recipientName: recipientName.trim(),
         pickupLine,
         thankYouMessage,
         sendAirtime,
@@ -40,7 +40,6 @@ export default function CreateCard() {
       });
 
       toast.success("Valentine card created");
-
       navigate("/home");
     } catch (err: any) {
       toast.error(
@@ -65,8 +64,8 @@ export default function CreateCard() {
           placeholder="e.g. Amaka"
           icon={<User size={20} />}
           className="bg-secondary"
-          value={loversName}
-          onChange={(e) => setLoversName(e.target.value)}
+          value={recipientName}
+          onChange={(e) => setRecipientName(e.target.value)}
         />
 
         <div className="space-y-1 flex flex-col">
@@ -159,7 +158,7 @@ export default function CreateCard() {
         <ButtonWithLoader
           initialText="Create Valentine Card"
           loadingText="Creating..."
-          loading={loading}
+          loading={creating}
           className="w-full btn-primary h-11 rounded-xl text-sm font-semibold"
         />
       </form>
