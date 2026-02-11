@@ -8,19 +8,15 @@ import {
 } from "@/components/ui";
 import { CallAdd, Wifi } from "iconsax-reactjs";
 import { toast } from "sonner";
-import { useValentines } from "@/hooks";
+import { useValentines, Valentine } from "@/hooks";
 
 export default function Gift() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const {
-    getByReference,
-    acceptValentine,
-    accepting,
-  } = useValentines();
+  const { getByReference, acceptValentine, accepting } = useValentines();
 
-  const [valentine, setValentine] = useState<any>(null);
+  const [valentine, setValentine] = useState<Valentine | null>(null);
   const [loadingCard, setLoadingCard] = useState(true);
 
   const [network, setNetwork] = useState("");
@@ -47,7 +43,6 @@ export default function Gift() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!id || !isValid) return;
 
     try {
@@ -106,10 +101,10 @@ export default function Gift() {
           className="bg-white"
           onChange={(e) => setNetwork(e.target.value)}
           options={[
-            { value: "mtn", label: "MTN" },
-            { value: "airtel", label: "Airtel" },
-            { value: "glo", label: "Glo" },
-            { value: "9mobile", label: "9mobile" },
+            { value: "1", label: "MTN" },
+            { value: "2", label: "GLO" },
+            { value: "3", label: "9Mobile" },
+            { value: "4", label: "Airtel" },
           ]}
         />
 
