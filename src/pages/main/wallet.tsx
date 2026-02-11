@@ -12,18 +12,20 @@ import {
   CardEdit,
 } from "iconsax-reactjs";
 import { toast } from "sonner";
-import { InputWithIcon } from "@/components/ui";
+import { InputWithIcon, ButtonWithLoader } from "@/components/ui";
 import { useWallet } from "@/hooks";
+import useFundWallet from "@/hooks/useFundWallet";
 
 export default function Wallet() {
-  const { balance, transactions } = useWallet();
+  const { balance, transactions, refetch } = useWallet();
+  const { fundWallet, loading } = useFundWallet();
 
   const accountNumber = "8137411338";
   const accountName = "Gift Uwem Jackson";
   const bankName = "OPay";
 
   const [copied, setCopied] = useState(false);
-  const [amount, setAmount] = useState(500);
+  const [amount, setAmount] = useState(200);
 
   const handleCopy = async () => {
     try {
@@ -36,9 +38,22 @@ export default function Wallet() {
     }
   };
 
-  const whatsappMessage = encodeURIComponent(
-    `Hello, I have made a payment of ₦${amount}. Please confirm and credit my wallet.`
-  );
+  const handleFund = async () => {
+    if (!amount || amount <= 0) {
+      toast.error("Enter valid amount");
+      return;
+    }
+
+    try {
+      await fundWallet(amount);
+      toast.success("Funding request submitted");
+      refetch();
+    } catch (err: any) {
+      toast.error(
+        err?.response?.data?.message || "Funding failed"
+      );
+    }
+  };
 
   return (
     <MainLayout>
@@ -57,39 +72,8 @@ export default function Wallet() {
           </div>
         </div>
 
-        <div className="bg-secondary p-4 rounded-2xl space-y-4 border border-line">
+        <div className="bg-secondary p-4 rounded-2xl space-y-6 border border-line">
           <h3 className="font-semibold">Fund Wallet</h3>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Select Amount</label>
-
-            <div className="grid grid-cols-3 gap-2">
-              {[200, 500, 1000].map((amt) => (
-                <button
-                  key={amt}
-                  type="button"
-                  onClick={() => setAmount(amt)}
-                  className={clsx(
-                    "p-3 rounded-xl text-sm font-semibold border",
-                    amount === amt
-                      ? "bg-primary/10 text-primary border-primary"
-                      : "bg-white border-line"
-                  )}
-                >
-                  ₦{amt}
-                </button>
-              ))}
-            </div>
-
-            <InputWithIcon
-              type="number"
-              icon={<CardEdit size={20} />}
-              placeholder="Custom amount e.g 250"
-              className="bg-white"
-              value={amount}
-              onChange={(e) => setAmount(Number(e.target.value))}
-            />
-          </div>
 
           <div className="bg-white p-4 rounded-xl space-y-4 border border-line">
             <div className="flex items-center justify-between">
@@ -120,14 +104,46 @@ export default function Wallet() {
             </div>
           </div>
 
-          <a
-            href={`https://wa.me/2348137411338?text=${whatsappMessage}`}
-            target="_blank"
-            rel="noreferrer"
-            className="btn bg-primary text-white w-full py-3 rounded-xl text-sm font-semibold text-center"
-          >
-            I have made payment
-          </a>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              Select Amount
+            </label>
+
+            <div className="grid grid-cols-3 gap-2">
+              {[200, 500, 1000].map((amt) => (
+                <button
+                  key={amt}
+                  type="button"
+                  onClick={() => setAmount(amt)}
+                  className={clsx(
+                    "p-3 rounded-xl text-sm font-semibold border",
+                    amount === amt
+                      ? "bg-primary/10 text-primary border-primary"
+                      : "bg-white border-line"
+                  )}
+                >
+                  ₦{amt}
+                </button>
+              ))}
+            </div>
+
+            <InputWithIcon
+              type="number"
+              icon={<CardEdit size={20} />}
+              placeholder="Custom amount"
+              className="bg-white"
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+            />
+          </div>
+
+          <ButtonWithLoader
+            initialText="I have made payment"
+            loadingText="Submitting..."
+            loading={loading}
+            onClick={handleFund}
+            className="w-full btn-primary h-11 rounded-xl text-sm font-semibold"
+          />
         </div>
 
         <div className="space-y-3">
