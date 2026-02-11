@@ -8,7 +8,6 @@ import {
   TickCircle,
   CloseCircle,
   Clock,
-  ArrowCircleRight,
   InfoCircle,
 } from "iconsax-reactjs";
 import { Link } from "react-router-dom";
