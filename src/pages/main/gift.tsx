@@ -4,7 +4,7 @@ import { CardLayout } from "@/layouts";
 import { InputWithIcon, SelectWithIcon, ButtonWithLoader } from "@/components/ui";
 import { CallAdd, Wifi } from "iconsax-reactjs";
 import { toast } from "sonner";
-import { usePublicValentine, useAcceptValentine} from "@/hooks
+import { usePublicValentine, useAcceptValentine} from "@/hooks";
 
 export default function Gift() {
   const navigate = useNavigate();
