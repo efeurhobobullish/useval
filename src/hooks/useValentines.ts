@@ -4,7 +4,7 @@ import api from "@/config/api";
 export type Valentine = {
   _id: string;
   recipientName: string;
-  status: "pending" | "accepted" | "rejected" | "failed";
+  status: "accepted" | "pending" | "rejected";
   sendAirtime: boolean;
   createdAt: string;
   reference: string;
