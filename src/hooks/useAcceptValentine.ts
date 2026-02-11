@@ -1,9 +1,10 @@
 import { useState } from "react";
 import api from "@/config/api";
+import { toast } from "sonner";
 
 type Payload = {
-  network: string;
-  phone: string;
+  network?: string;
+  phone?: string;
 };
 
 const useAcceptValentine = () => {
@@ -11,22 +12,31 @@ const useAcceptValentine = () => {
 
   const acceptValentine = async (
     reference: string,
-    payload: Payload
+    payload?: Payload
   ) => {
     setLoading(true);
     try {
       const res = await api.post(
         `/v1/valentine/accept/${reference}`,
-        payload
+        payload || {}
       );
       return res.data;
+    } catch (err: any) {
+      throw err;
     } finally {
       setLoading(false);
     }
   };
 
+  const copyLink = (reference: string) => {
+    const link = `${window.location.origin}/card/${reference}`;
+    navigator.clipboard.writeText(link);
+    toast.success("Card link copied");
+  };
+
   return {
     acceptValentine,
+    copyLink,
     loading,
   };
 };
