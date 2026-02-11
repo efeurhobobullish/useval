@@ -76,11 +76,10 @@ export default function History() {
                 </span>
               )}
 
-              {(card.status === "rejected" ||
-                card.status === "failed") && (
+              {card.status === "rejected" && (
                 <span className="flex items-center gap-1 text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
                   <CloseCircle size={14} />
-                  Failed
+                  Rejected
                 </span>
               )}
 
