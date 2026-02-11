@@ -155,8 +155,11 @@ export default function Wallet() {
               className="text-amber-500 mt-0.5 flex-shrink-0"
             />
             <p className="text-xs font-medium text-amber-800 leading-relaxed">
-              After transfer, click the button above. Your wallet will be
-              credited after admin confirmation.
+              We are currently using a personal account to avoid VAT and tax
+              fees from Paystack or other third-party platforms. After making
+              payment, kindly click the button below to notify us. Your
+              transaction will be confirmed and your wallet credited
+              immediately.
             </p>
           </div>
         </div>
