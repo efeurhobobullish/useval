@@ -18,10 +18,10 @@ import useWallet from "@/hooks/useWallet";
 import useFundWallet from "@/hooks/useFundWallet";
 
 export default function Wallet() {
-  const { balance, transactions = [], loading, refetch } = useWallet();
+  const { balance, transactions = [], refetch } = useWallet();
   const { fundWallet, loading: funding } = useFundWallet();
 
-  const [amount, setAmount] = useState<number>(200);
+  const [amount, setAmount] = useState(200);
   const [copied, setCopied] = useState(false);
 
   const accountNumber = "8137411338";
@@ -42,11 +42,11 @@ export default function Wallet() {
 
     try {
       await fundWallet(amount);
-      toast.success("Payment request submitted");
+      toast.success("Funding request submitted");
       refetch();
     } catch (err: any) {
       toast.error(
-        err?.response?.data?.message || "Unable to submit payment"
+        err?.response?.data?.message || "Unable to submit request"
       );
     }
   };
@@ -54,6 +54,7 @@ export default function Wallet() {
   return (
     <MainLayout>
       <div className="space-y-6">
+        {/* Balance */}
         <div className="bg-white rounded-xl p-4 border border-line">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/10 center">
@@ -62,12 +63,13 @@ export default function Wallet() {
             <div>
               <p className="text-muted text-xs">Wallet Balance</p>
               <h4 className="font-bold text-lg">
-                ₦{formatNumber(balance || 0)}
+                ₦{formatNumber(balance)}
               </h4>
             </div>
           </div>
         </div>
 
+        {/* Fund Wallet */}
         <div className="bg-secondary p-4 rounded-2xl space-y-6 border border-line">
           <h3 className="font-semibold">Fund Wallet</h3>
 
@@ -83,7 +85,6 @@ export default function Wallet() {
               </div>
 
               <button
-                type="button"
                 onClick={handleCopy}
                 className="h-9 w-9 rounded-full bg-secondary center hover:bg-primary/10 transition"
               >
@@ -108,6 +109,7 @@ export default function Wallet() {
             </div>
           </div>
 
+          {/* Amount Section */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Select Amount</label>
 
@@ -135,12 +137,11 @@ export default function Wallet() {
               placeholder="Custom amount"
               className="bg-white"
               value={amount}
-              onChange={(e) => setAmount(Number(e.target.value) || 0)}
+              onChange={(e) => setAmount(Number(e.target.value))}
             />
           </div>
 
           <ButtonWithLoader
-            type="button"
             initialText="I have made payment"
             loadingText="Submitting..."
             loading={funding}
@@ -155,21 +156,16 @@ export default function Wallet() {
             />
             <p className="text-xs font-medium text-amber-800 leading-relaxed">
               After transfer, click the button above. Your wallet will be
-              credited after confirmation.
+              credited after admin confirmation.
             </p>
           </div>
         </div>
 
+        {/* Transactions */}
         <div className="space-y-3">
           <h3 className="font-semibold">Transaction History</h3>
 
           <div className="bg-white rounded-xl border border-line divide-y divide-line">
-            {!transactions.length && (
-              <div className="p-6 text-center text-sm text-muted">
-                No transactions yet
-              </div>
-            )}
-
             {transactions.map((tx) => (
               <div
                 key={tx._id}
