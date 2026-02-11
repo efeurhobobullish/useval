@@ -1,30 +1,40 @@
 import { useEffect, useState } from "react";
 import api from "@/config/api";
 
-export type WalletTransaction = {
-  _id: string;
-  type: "credit" | "debit";
-  description: string;
-  amount: number;
-  createdAt: string;
-};
-
 const useWallet = () => {
   const [balance, setBalance] = useState(0);
-  const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fundingLoading, setFundingLoading] = useState(false);
 
   const fetchWallet = async () => {
     try {
-      const [walletRes, txRes] = await Promise.all([
-        api.get("/v1/users/wallet"),
-        api.get("/v1/transactions/me"),
-      ]);
+      setLoading(true);
 
-      setBalance(walletRes.data.wallet || 0);
-      setTransactions(txRes.data.transactions || []);
+      const res = await api.get("/v1/users/me");
+
+      const walletBalance = res.data?.user?.wallet || 0;
+
+      setBalance(walletBalance);
+    } catch (error) {
+      setBalance(0);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fundWallet = async (amount: number) => {
+    if (!amount || amount <= 0) {
+      throw new Error("Invalid amount");
+    }
+
+    try {
+      setFundingLoading(true);
+
+      const res = await api.post("/v1/wallet/fund", { amount });
+
+      return res.data;
+    } finally {
+      setFundingLoading(false);
     }
   };
 
@@ -34,8 +44,9 @@ const useWallet = () => {
 
   return {
     balance,
-    transactions,
     loading,
+    fundingLoading,
+    fundWallet,
     refetch: fetchWallet,
   };
 };
