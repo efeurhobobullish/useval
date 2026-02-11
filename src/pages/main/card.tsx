@@ -1,17 +1,45 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CardLayout } from "@/layouts";
-import { usePublicValentine } from "@/hooks";
+import { useValentines } from "@/hooks";
 
 export default function Card() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { valentine, loading, error } = usePublicValentine(id);
+  const {
+    getByReference,
+    acceptValentine,
+    accepting,
+  } = useValentines();
+
+  const [valentine, setValentine] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   const [clickCount, setClickCount] = useState(0);
   const [position, setPosition] = useState({ x: 80, y: 0 });
   const [merged, setMerged] = useState(false);
+
+  /* ================= LOAD CARD ================= */
+
+  useEffect(() => {
+    const load = async () => {
+      if (!id) return;
+
+      try {
+        const data = await getByReference(id);
+        setValentine(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [id]);
+
+  /* ================= NO BUTTON ================= */
 
   const jumpRandomly = () => {
     const randomX = Math.random() * 260 - 130;
@@ -37,13 +65,21 @@ export default function Card() {
     }
   };
 
-  const handleYes = () => {
-    if (!valentine) return;
+  /* ================= YES BUTTON ================= */
 
-    if (valentine.sendAirtime) {
+  const handleYes = async () => {
+    if (!valentine || !id) return;
+
+    try {
+      if (!valentine.sendAirtime) {
+        await acceptValentine(id);
+        navigate(`/card/${id}/success`);
+        return;
+      }
+
       navigate(`/card/${id}/gift`);
-    } else {
-      navigate(`/card/${id}/success`);
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -55,11 +91,11 @@ export default function Card() {
     );
   }
 
-  if (error || !valentine) {
+  if (!valentine) {
     return (
       <CardLayout>
         <p className="text-center text-muted">
-          {error || "Valentine not found"}
+          Valentine not found
         </p>
       </CardLayout>
     );
@@ -70,10 +106,9 @@ export default function Card() {
       <div className="text-center space-y-4">
         <h2 className="text-2xl font-bold">
           <span className="text-primary">
-            {valentine.recipientName}
+            {valentine.loversName}
           </span>
-          , will you
-          <br /> be my Valentine?
+          , will you be my Valentine?
         </h2>
 
         {valentine.pickupLine && (
@@ -86,9 +121,10 @@ export default function Card() {
       <div className="relative mt-10 h-32 flex items-center justify-center gap-6 overflow-hidden">
         <button
           onClick={handleYes}
+          disabled={accepting}
           className="btn bg-primary -translate-x-20 text-white px-8 py-3 rounded-xl font-semibold relative z-20"
         >
-          Yes ❤️
+          {accepting ? "Processing..." : "Yes ❤️"}
         </button>
 
         <button
@@ -101,31 +137,6 @@ export default function Card() {
           No 💔
         </button>
       </div>
-
-      <p className="text-xs text-muted mt-6 text-center">
-        Try if you dare 😏
-      </p>
-
-      <p className="text-xs text-muted mt-6 text-center">
-        Built by{" "}
-        <a
-          href="https://github.com/efeurhobobullish"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary underline font-semibold"
-        >
-          Empire Tech
-        </a>{" "}
-        &{" "}
-        <a
-          href="https://github.com/learnwithjacksun"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary underline font-semibold"
-        >
-          Gift Jacksun
-        </a>
-      </p>
     </CardLayout>
   );
 }
