@@ -1,16 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { CardLayout } from "@/layouts";
+import { usePublicValentine } from "@/hooks";
 
 export default function Card() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const card = {
-    recipient: "Blessing",
-    pickupLine: "Are you WiFi? Because I'm feeling the connection 😌",
-    hasAirtime: true,
-  };
+  const { valentine, loading, error } = usePublicValentine(id);
 
   const [clickCount, setClickCount] = useState(0);
   const [position, setPosition] = useState({ x: 80, y: 0 });
@@ -19,20 +16,11 @@ export default function Card() {
   const jumpRandomly = () => {
     const randomX = Math.random() * 260 - 130;
     const randomY = Math.random() * 120 - 60;
-
-    setPosition({
-      x: randomX,
-      y: randomY,
-    });
+    setPosition({ x: randomX, y: randomY });
   };
 
   const surrender = () => {
-    // Move close to YES but leave small visible edge
-    setPosition({
-      x: -110,
-      y: 0,
-    });
-
+    setPosition({ x: -110, y: 0 });
     setMerged(true);
   };
 
@@ -50,28 +38,52 @@ export default function Card() {
   };
 
   const handleYes = () => {
-    if (card.hasAirtime) {
+    if (!valentine) return;
+
+    if (valentine.sendAirtime) {
       navigate(`/card/${id}/gift`);
     } else {
       navigate(`/card/${id}/success`);
     }
   };
 
+  if (loading) {
+    return (
+      <CardLayout>
+        <p className="text-center text-muted">Loading...</p>
+      </CardLayout>
+    );
+  }
+
+  if (error || !valentine) {
+    return (
+      <CardLayout>
+        <p className="text-center text-muted">
+          {error || "Valentine not found"}
+        </p>
+      </CardLayout>
+    );
+  }
+
   return (
     <CardLayout>
       <div className="text-center space-y-4">
         <h2 className="text-2xl font-bold">
-          <span className="text-primary">{card.recipient}</span>, will you
+          <span className="text-primary">
+            {valentine.recipientName}
+          </span>
+          , will you
           <br /> be my Valentine?
         </h2>
 
-        <p className="text-muted max-w-md mx-auto">
-          {card.pickupLine}
-        </p>
+        {valentine.pickupLine && (
+          <p className="text-muted max-w-md mx-auto">
+            {valentine.pickupLine}
+          </p>
+        )}
       </div>
 
       <div className="relative mt-10 h-32 flex items-center justify-center gap-6 overflow-hidden">
-        {/* YES - fixed left */}
         <button
           onClick={handleYes}
           className="btn bg-primary -translate-x-20 text-white px-8 py-3 rounded-xl font-semibold relative z-20"
@@ -79,7 +91,6 @@ export default function Card() {
           Yes ❤️
         </button>
 
-        {/* NO - fixed right initially */}
         <button
           onClick={handleNoClick}
           style={{
