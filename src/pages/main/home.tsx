@@ -14,13 +14,8 @@ import { Link } from "react-router-dom";
 import { useWalletDashboard } from "@/hooks";
 
 export default function Home() {
-  const { balance, firstName, transactions, loading } =
+  const { balance, firstName, transactions, stats, loading } =
     useWalletDashboard();
-
-  const totalCards = 0;
-  const acceptedCards = 0;
-  const pendingCards = 0;
-  const rejectedCards = 0;
 
   const totalSenders = transactions.length;
 
@@ -113,7 +108,7 @@ export default function Home() {
               <div>
                 <p className="text-muted text-xs">Total Cards</p>
                 <h4 className="font-bold text-lg">
-                  <CountUp start={0} end={totalCards} duration={1.5} />
+                  <CountUp start={0} end={stats.total} duration={1.5} />
                 </h4>
               </div>
             </div>
@@ -128,7 +123,7 @@ export default function Home() {
               <div>
                 <p className="text-muted text-xs">Accepted</p>
                 <h4 className="font-bold text-lg">
-                  <CountUp start={0} end={acceptedCards} duration={1.5} />
+                  <CountUp start={0} end={stats.accepted} duration={1.5} />
                 </h4>
               </div>
             </div>
@@ -143,7 +138,7 @@ export default function Home() {
               <div>
                 <p className="text-muted text-xs">Pending</p>
                 <h4 className="font-bold text-lg">
-                  <CountUp start={0} end={pendingCards} duration={1.5} />
+                  <CountUp start={0} end={stats.pending} duration={1.5} />
                 </h4>
               </div>
             </div>
@@ -158,14 +153,13 @@ export default function Home() {
               <div>
                 <p className="text-muted text-xs">Rejected</p>
                 <h4 className="font-bold text-lg">
-                  <CountUp start={0} end={rejectedCards} duration={1.5} />
+                  <CountUp start={0} end={stats.rejected} duration={1.5} />
                 </h4>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Neat Wallet Button Same Style As Create Card */}
         <Link
           to="/wallet"
           className="btn bg-primary/20 text-primary font-semibold text-sm px-4 h-10 rounded-lg flex items-center gap-2 w-fit"
