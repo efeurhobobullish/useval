@@ -5,58 +5,50 @@ import { CardLayout } from "@/layouts";
 export default function Card() {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const yesRef = useRef<HTMLButtonElement | null>(null);
 
   const card = {
-    recipient: "Amaka",
+    recipient: "Anita",
     pickupLine: "Are you WiFi? Because I'm feeling the connection 😌",
     hasAirtime: true,
   };
 
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [activated, setActivated] = useState(false);
-  const [escapeCount, setEscapeCount] = useState(0);
+  const [clickCount, setClickCount] = useState(0);
+  const [position, setPosition] = useState({ x: 80, y: 0 });
   const [merged, setMerged] = useState(false);
 
-  const randomMove = () => {
-    const maxX = window.innerWidth - 200;
-    const maxY = window.innerHeight - 300;
-
-    const randomX = Math.random() * maxX - maxX / 2;
-    const randomY = Math.random() * maxY - maxY / 2;
-
-    setPosition({ x: randomX, y: randomY });
-  };
-
-  const mergeWithYes = () => {
-    if (!yesRef.current) return;
-
-    const rect = yesRef.current.getBoundingClientRect();
+  const jumpRandomly = () => {
+    const randomX = Math.random() * 250 - 125;
+    const randomY = Math.random() * 120 - 60;
 
     setPosition({
-      x: rect.left - window.innerWidth / 2 + rect.width / 2 - 30,
-      y: rect.top - window.innerHeight / 2 + rect.height / 2 - 20,
+      x: randomX,
+      y: randomY,
+    });
+  };
+
+  const mergeIntoYes = () => {
+    if (!yesRef.current) return;
+
+    setPosition({
+      x: -80,
+      y: 0,
     });
 
     setMerged(true);
   };
 
   const handleNoClick = () => {
-    if (!activated) {
-      setActivated(true);
-      randomMove();
-      setEscapeCount(1);
-      return;
-    }
+    if (merged) return;
 
-    if (escapeCount >= 5) {
-      mergeWithYes();
-      return;
-    }
+    const nextCount = clickCount + 1;
+    setClickCount(nextCount);
 
-    setEscapeCount((prev) => prev + 1);
-    randomMove();
+    if (nextCount >= 6) {
+      mergeIntoYes();
+    } else {
+      jumpRandomly();
+    }
   };
 
   const handleYes = () => {
@@ -80,36 +72,33 @@ export default function Card() {
         </p>
       </div>
 
-      <div className="relative mt-12 h-40 flex items-center justify-center gap-6">
-        {/* YES */}
+      <div className="relative mt-10 h-32 flex items-center justify-center gap-6 overflow-hidden">
+        {/* YES - LEFT */}
         <button
           ref={yesRef}
           onClick={handleYes}
-          className="btn bg-primary text-white px-8 py-3 rounded-xl font-semibold z-20 relative"
+          className="btn bg-primary -translate-x-20 text-white px-8 py-3 rounded-xl font-semibold relative z-20"
         >
           Yes ❤️
         </button>
 
-        {/* NO */}
+        {/* NO - RIGHT */}
         <button
           onClick={handleNoClick}
-          onMouseEnter={activated && !merged ? randomMove : undefined}
           style={{
-            transform: activated
-              ? `translate(${position.x}px, ${position.y}px)`
-              : "translate(0px, 0px)",
+            transform: `translate(${position.x}px, ${position.y}px)`,
           }}
-          className="btn bg-secondary border border-line text-main px-8 py-3 rounded-xl font-semibold transition-all duration-300 ease-in-out absolute z-10"
+          className="btn bg-gray-200 text-gray-700 px-8 py-3 rounded-xl font-semibold transition-all duration-200 absolute z-10"
         >
           No 💔
         </button>
       </div>
 
       <p className="text-xs text-muted mt-6 text-center">
-        Resistance is temporary 😌
+        Keep trying 😏
       </p>
 
-      <p className="text-xs text-muted mt-8 text-center leading-relaxed">
+      <p className="text-xs text-muted mt-6 text-center">
         Built by{" "}
         <a
           href="https://github.com/efeurhobobullish"
