@@ -166,21 +166,13 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Strong Wallet CTA */}
+        {/* Neat Wallet Button Same Style As Create Card */}
         <Link
           to="/wallet"
-          className="group w-full bg-primary text-white rounded-xl px-4 py-3 flex items-center justify-between font-semibold text-sm hover:opacity-90 transition"
+          className="btn bg-primary/20 text-primary font-semibold text-sm px-4 h-10 rounded-lg flex items-center gap-2 w-fit"
         >
-          <div className="flex items-center gap-2">
-            <Wallet size={18} variant="Bulk" />
-            Fund Wallet
-          </div>
-
-          <ArrowCircleRight
-            size={18}
-            variant="Bulk"
-            className="transition-transform group-hover:translate-x-1"
-          />
+          <Wallet size={18} />
+          Fund Wallet
         </Link>
       </div>
 
