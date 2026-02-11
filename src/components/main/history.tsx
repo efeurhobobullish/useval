@@ -27,8 +27,8 @@ export default function History() {
   return (
     <div className="space-y-4">
       {valentines.length === 0 && (
-        <div className="rounded-2xl border border-line p-10 flex flex-col items-center text-center space-y-6">
-          <div className="h-20 w-20 rounded-full bg-primary/10 center">
+        <div className="p-12 text-center space-y-6">
+          <div className="h-20 w-20 rounded-full bg-primary/10 center mx-auto">
             <Heart size={36} variant="Bulk" className="text-primary" />
           </div>
 
@@ -36,14 +36,14 @@ export default function History() {
             <h3 className="text-lg font-semibold">
               No Valentine Cards Yet
             </h3>
-            <p className="text-sm text-muted max-w-sm">
+            <p className="text-sm text-muted max-w-sm mx-auto">
               You have not created any Valentine cards. Start now and make someone smile today.
             </p>
           </div>
 
           <Link
             to="/create"
-            className="btn bg-primary/20 text-primary font-semibold text-sm px-6 h-11 rounded-xl"
+            className="btn bg-primary/20 text-primary font-semibold text-sm px-6 h-11 rounded-lg inline-flex"
           >
             Create Your First Card
           </Link>
@@ -58,7 +58,7 @@ export default function History() {
           >
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 center">
-                <Heart size={18} className="text-primary" variant="Bulk" />
+                <Heart size={18} variant="Bulk" className="text-primary" />
               </div>
 
               <div>
