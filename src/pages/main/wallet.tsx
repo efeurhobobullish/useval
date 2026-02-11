@@ -1,5 +1,7 @@
 import { useState } from "react";
+import CountUp from "react-countup";
 import { formatNumber } from "@/helpers/formatNumber";
+import { formatDate } from "@/helpers/formatDate";
 import { MainLayout } from "@/layouts";
 import {
   Wallet as WalletIcon,
@@ -7,6 +9,8 @@ import {
   Copy,
   TickCircle,
   CardEdit,
+  ArrowDown,
+  ArrowUp,
 } from "iconsax-reactjs";
 import { InputWithIcon, ButtonWithLoader } from "@/components/ui";
 import { toast } from "sonner";
@@ -26,6 +30,30 @@ export default function Wallet() {
 
   const accountNumber = "8137411338";
   const accountName = "Gift Uwem Jackson";
+
+  const demoTransactions = [
+    {
+      id: 1,
+      type: "credit",
+      title: "Wallet funding",
+      amount: 3000,
+      date: new Date(),
+    },
+    {
+      id: 2,
+      type: "debit",
+      title: "Airtime purchase",
+      amount: 500,
+      date: new Date(),
+    },
+    {
+      id: 3,
+      type: "credit",
+      title: "Wallet funding",
+      amount: 1000,
+      date: new Date(),
+    },
+  ];
 
   const handleCopy = () => {
     navigator.clipboard.writeText(accountNumber);
@@ -55,6 +83,7 @@ export default function Wallet() {
   return (
     <MainLayout>
       <div className="space-y-6">
+
         {/* Wallet Balance */}
         <div className="bg-white rounded-xl p-4 border border-line">
           <div className="flex items-center gap-3">
@@ -64,7 +93,15 @@ export default function Wallet() {
             <div>
               <p className="text-muted text-xs">Wallet Balance</p>
               <h4 className="font-bold text-lg">
-                {loading ? "Loading..." : `₦${formatNumber(balance)}`}
+                ₦
+                {!loading && (
+                  <CountUp
+                    start={0}
+                    end={balance}
+                    duration={1.5}
+                    separator=","
+                  />
+                )}
               </h4>
             </div>
           </div>
@@ -87,7 +124,7 @@ export default function Wallet() {
 
               <button
                 onClick={handleCopy}
-                className="h-9 w-9 rounded-full bg-secondary center hover:bg-primary/10 transition"
+                className="h-9 w-9 rounded-full bg-secondary center"
               >
                 {copied ? (
                   <TickCircle size={18} className="text-green-600" />
@@ -102,7 +139,6 @@ export default function Wallet() {
                 <span className="text-muted">Account Name</span>
                 <span className="font-semibold">{accountName}</span>
               </div>
-
               <div className="flex justify-between">
                 <span className="text-muted">Account Number</span>
                 <span className="font-semibold">{accountNumber}</span>
@@ -110,10 +146,8 @@ export default function Wallet() {
             </div>
           </div>
 
-          {/* Amount Input */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Input Amount</label>
-
             <InputWithIcon
               type="number"
               icon={<CardEdit size={20} />}
@@ -124,12 +158,8 @@ export default function Wallet() {
             />
           </div>
 
-          {/* Info Box */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-3">
-            <InfoCircle
-              size={16}
-              className="text-amber-500 mt-0.5 flex-shrink-0"
-            />
+            <InfoCircle size={16} className="text-amber-500 mt-0.5" />
             <p className="text-xs font-medium text-amber-800 leading-relaxed">
               We are currently using a personal account to avoid VAT and tax
               fees from Paystack or other third-party platforms. After making
@@ -147,6 +177,57 @@ export default function Wallet() {
             className="w-full btn-primary h-11 rounded-xl text-sm font-semibold"
           />
         </div>
+
+        {/* Transaction History */}
+        <div className="space-y-3">
+          <h3 className="font-semibold">Transaction History</h3>
+
+          <div className="bg-white rounded-xl border border-line divide-y divide-line">
+            {demoTransactions.map((tx) => (
+              <div
+                key={tx.id}
+                className="flex items-center justify-between p-4"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`h-9 w-9 rounded-full center ${
+                      tx.type === "credit"
+                        ? "bg-green-100"
+                        : "bg-red-100"
+                    }`}
+                  >
+                    {tx.type === "credit" ? (
+                      <ArrowDown size={18} className="text-green-600" />
+                    ) : (
+                      <ArrowUp size={18} className="text-red-600" />
+                    )}
+                  </div>
+
+                  <div>
+                    <p className="text-sm font-medium capitalize">
+                      {tx.title}
+                    </p>
+                    <p className="text-xs text-muted">
+                      {formatDate(tx.date)}
+                    </p>
+                  </div>
+                </div>
+
+                <p
+                  className={`text-sm font-semibold ${
+                    tx.type === "credit"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {tx.type === "credit" ? "+" : "-"}₦
+                  {formatNumber(tx.amount)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </MainLayout>
   );
