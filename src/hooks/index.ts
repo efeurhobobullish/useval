@@ -6,4 +6,3 @@ export {default as useCreateValentine} from "./useCreateValentine";
 export {default as usePublicValentine} from "./usePublicValentine";
 export {default as useAcceptValentine} from "./useAcceptValentine";
 export {default as useWallet} from "./useWallet";
-export {default as useFundWallet} from "./useFundWallet";
