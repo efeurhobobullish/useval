@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Copy, Heart, TickCircle, CloseCircle } from "iconsax-reactjs";
 import { useState } from "react";
 import { toast } from "sonner";
