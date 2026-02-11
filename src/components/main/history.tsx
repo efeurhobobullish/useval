@@ -6,20 +6,23 @@ import { useValentines } from "@/hooks";
 
 export default function History() {
   const { valentines, loading } = useValentines();
+
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleCopy = (reference: string) => {
     const link = `${window.location.origin}/card/${reference}`;
     navigator.clipboard.writeText(link);
     setCopiedId(reference);
-    toast.success("Card link copied");
-    setTimeout(() => setCopiedId(null), 2000);
+    toast.success("Card Link copied!");
+    setTimeout(() => {
+      setCopiedId(null);
+    }, 2000);
   };
 
   if (loading) {
     return (
-      <div className="p-6 rounded-xl border border-line text-center">
-        <p className="text-sm text-muted">Loading cards...</p>
+      <div className="bg-secondary p-6 min-h-[260px] center rounded-xl border border-line">
+        <p className="text-muted text-sm">Loading cards...</p>
       </div>
     );
   }
@@ -27,26 +30,13 @@ export default function History() {
   return (
     <div className="space-y-4">
       {valentines.length === 0 && (
-        <div className="p-12 text-center space-y-6">
-          <div className="h-20 w-20 rounded-full bg-primary/10 center mx-auto">
-            <Heart size={36} variant="Bulk" className="text-primary" />
+        <div className="bg-secondary p-6 min-h-[260px] center rounded-xl border border-line">
+          <div className="text-center space-y-2">
+            <p className="text-muted text-sm">No cards found</p>
+            <Link to="/create" className="text-primary text-sm font-semibold">
+              Create your first Valentine →
+            </Link>
           </div>
-
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold">
-              No Valentine Cards Yet
-            </h3>
-            <p className="text-sm text-muted max-w-sm mx-auto">
-              You have not created any Valentine cards. Start now and make someone smile today.
-            </p>
-          </div>
-
-          <Link
-            to="/create"
-            className="btn bg-primary/20 text-primary font-semibold text-sm px-6 h-11 rounded-lg inline-flex"
-          >
-            Create Your First Card
-          </Link>
         </div>
       )}
 
@@ -54,7 +44,7 @@ export default function History() {
         valentines.map((card) => (
           <div
             key={card._id}
-            className="p-4 rounded-xl border border-line flex items-center justify-between"
+            className="bg-white p-4 rounded-xl border border-line flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 center">
