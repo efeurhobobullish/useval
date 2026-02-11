@@ -13,7 +13,11 @@ import { Link } from "react-router-dom";
 import { useWallet, useValentines } from "@/hooks";
 
 export default function Home() {
-  const { balance = 0, loading: walletLoading } = useWallet();
+  const {
+    balance = 0,
+    fullName,
+    loading: walletLoading,
+  } = useWallet();
 
   const { stats, valentines } = useValentines();
   const totalSenders = valentines.length;
@@ -31,7 +35,11 @@ export default function Home() {
     <MainLayout>
       <div className="space-y-1 flex md:items-center justify-between md:flex-row flex-col">
         <h3 className="text-xl font-bold">
-          Hey 👋
+          Hey,{" "}
+          <span className="text-muted">
+            {fullName ? fullName.split(" ")[0] : "There"}
+          </span>{" "}
+          👋
         </h3>
 
         <div className="flex md:flex-row flex-col md:items-center md:gap-3 gap-2 mt-3 flex-wrap">
@@ -74,7 +82,6 @@ export default function Home() {
       <div className="bg-secondary p-2 rounded-2xl space-y-3">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
 
-          {/* Wallet Balance */}
           <div className="bg-white col-span-2 md:col-span-1 rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 center">
@@ -99,7 +106,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Total Cards */}
           <div className="bg-white rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-amber-100 center">
@@ -114,7 +120,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Accepted */}
           <div className="bg-white rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-green-100 center">
@@ -129,7 +134,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Pending */}
           <div className="bg-white rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-blue-100 center">
@@ -144,18 +148,15 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Expired */}
           <div className="bg-white rounded-xl p-4 border border-line">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-gray-100 center">
-                <Clock size={20} className="text-gray-500" />
-              </div>
-              <div>
-                <p className="text-muted text-xs">Expired</p>
-                <h4 className="font-bold text-lg">
-                  <CountUp start={0} end={stats.expired} duration={1.5} />
-                </h4>
-              </div>
+            <div className="h-10 w-10 rounded-full bg-gray-100 center">
+              <Clock size={20} className="text-gray-500" />
+            </div>
+            <div>
+              <p className="text-muted text-xs">Expired</p>
+              <h4 className="font-bold text-lg">
+                <CountUp start={0} end={stats.expired} duration={1.5} />
+              </h4>
             </div>
           </div>
 
