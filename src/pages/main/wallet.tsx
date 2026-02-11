@@ -107,37 +107,18 @@ export default function Wallet() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Select Amount</label>
+           <div className="space-y-2">
+              <label className="text-sm font-medium">Input Amount</label>
 
-            <div className="grid grid-cols-3 gap-2">
-              {[200, 500, 1000].map((amt) => (
-                <button
-                  key={amt}
-                  type="button"
-                  onClick={() => setAmount(amt)}
-                  className={clsx(
-                    "p-3 rounded-xl text-sm font-semibold border",
-                    amount === amt
-                      ? "bg-primary/10 text-primary border-primary"
-                      : "bg-white border-line"
-                  )}
-                >
-                  ₦{amt}
-                </button>
-              ))}
-            </div>
-
-            <InputWithIcon
+              <InputWithIcon
               type="number"
               icon={<CardEdit size={20} />}
-              placeholder="Custom amount"
+              placeholder="Enter amount e.g 1000"
               className="bg-white"
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
-            />
+               />
           </div>
-
           {/* INFO BOX MOVED HERE */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-3">
             <InfoCircle
