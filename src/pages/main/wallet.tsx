@@ -1,4 +1,5 @@
 import { useState } from "react";
+import clsx from "clsx";
 import { formatDate } from "@/helpers/formatDate";
 import { formatNumber } from "@/helpers/formatNumber";
 import { MainLayout } from "@/layouts";
@@ -8,8 +9,10 @@ import {
   ArrowDown,
   Copy,
   TickCircle,
+  CardEdit,
 } from "iconsax-reactjs";
 import { toast } from "sonner";
+import { InputWithIcon } from "@/components/ui";
 import { useWallet } from "@/hooks";
 
 export default function Wallet() {
@@ -20,6 +23,7 @@ export default function Wallet() {
   const bankName = "OPay";
 
   const [copied, setCopied] = useState(false);
+  const [amount, setAmount] = useState(500);
 
   const handleCopy = async () => {
     try {
@@ -31,6 +35,10 @@ export default function Wallet() {
       toast.error("Copy failed");
     }
   };
+
+  const whatsappMessage = encodeURIComponent(
+    `Hello, I have made a payment of ₦${amount}. Please confirm and credit my wallet.`
+  );
 
   return (
     <MainLayout>
@@ -51,6 +59,37 @@ export default function Wallet() {
 
         <div className="bg-secondary p-4 rounded-2xl space-y-4 border border-line">
           <h3 className="font-semibold">Fund Wallet</h3>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Select Amount</label>
+
+            <div className="grid grid-cols-3 gap-2">
+              {[200, 500, 1000].map((amt) => (
+                <button
+                  key={amt}
+                  type="button"
+                  onClick={() => setAmount(amt)}
+                  className={clsx(
+                    "p-3 rounded-xl text-sm font-semibold border",
+                    amount === amt
+                      ? "bg-primary/10 text-primary border-primary"
+                      : "bg-white border-line"
+                  )}
+                >
+                  ₦{amt}
+                </button>
+              ))}
+            </div>
+
+            <InputWithIcon
+              type="number"
+              icon={<CardEdit size={20} />}
+              placeholder="Custom amount e.g 250"
+              className="bg-white"
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+            />
+          </div>
 
           <div className="bg-white p-4 rounded-xl space-y-4 border border-line">
             <div className="flex items-center justify-between">
@@ -80,6 +119,15 @@ export default function Wallet() {
               </div>
             </div>
           </div>
+
+          <a
+            href={`https://wa.me/2348137411338?text=${whatsappMessage}`}
+            target="_blank"
+            rel="noreferrer"
+            className="btn bg-primary text-white w-full py-3 rounded-xl text-sm font-semibold text-center"
+          >
+            I have made payment
+          </a>
         </div>
 
         <div className="space-y-3">
