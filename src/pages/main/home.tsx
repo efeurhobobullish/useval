@@ -15,12 +15,8 @@ import { Link } from "react-router-dom";
 import { useWalletDashboard } from "@/hooks";
 
 export default function Home() {
-  const {
-    balance,
-    firstName,
-    transactions,
-    loading,
-  } = useWalletDashboard();
+  const { balance, firstName, transactions, loading } =
+    useWalletDashboard();
 
   const totalCards = 0;
   const acceptedCards = 0;
@@ -73,14 +69,17 @@ export default function Home() {
       </div>
 
       <div className="bg-amber-50 rounded-xl p-3 flex gap-3">
-        <InfoCircle size={16} className="text-amber-500 mt-0.5 flex-shrink-0" />
+        <InfoCircle
+          size={16}
+          className="text-amber-500 mt-0.5 flex-shrink-0"
+        />
         <p className="text-xs font-medium text-amber-800 leading-relaxed">
           The wallet is used only for airtime gifts. Creating and sharing
           Valentine cards is free.
         </p>
       </div>
 
-      <div className="bg-secondary p-2 rounded-2xl space-y-2">
+      <div className="bg-secondary p-2 rounded-2xl space-y-3">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {/* Wallet */}
           <div className="bg-white col-span-2 md:col-span-1 rounded-xl p-4 border border-line">
@@ -167,21 +166,23 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Strong Wallet CTA */}
         <Link
-  to="/wallet"
-  className="group mt-3 w-full bg-primary text-white rounded-xl px-4 py-3 flex items-center justify-between font-semibold text-sm hover:opacity-90 transition"
->
-  <div className="flex items-center gap-2">
-    <Wallet size={18} variant="Bulk" />
-    Fund Wallet
-  </div>
+          to="/wallet"
+          className="group w-full bg-primary text-white rounded-xl px-4 py-3 flex items-center justify-between font-semibold text-sm hover:opacity-90 transition"
+        >
+          <div className="flex items-center gap-2">
+            <Wallet size={18} variant="Bulk" />
+            Fund Wallet
+          </div>
 
-  <ArrowCircleRight
-    size={18}
-    variant="Bulk"
-    className="transition-transform group-hover:translate-x-1"
-  />
-</Link>
+          <ArrowCircleRight
+            size={18}
+            variant="Bulk"
+            className="transition-transform group-hover:translate-x-1"
+          />
+        </Link>
+      </div>
 
       <div className="mt-10 space-y-4">
         <div className="flex items-center justify-between">
@@ -199,4 +200,4 @@ export default function Home() {
       </div>
     </MainLayout>
   );
-                    }
+}
