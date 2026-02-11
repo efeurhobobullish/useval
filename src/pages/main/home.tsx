@@ -168,12 +168,20 @@ export default function Home() {
         </div>
 
         <Link
-          to="/wallet"
-          className="btn w-fit text-primary font-medium text-sm px-4 py-2"
-        >
-          Fund Wallet <ArrowCircleRight size={18} variant="Bulk" />
-        </Link>
-      </div>
+  to="/wallet"
+  className="group mt-3 w-full bg-primary text-white rounded-xl px-4 py-3 flex items-center justify-between font-semibold text-sm hover:opacity-90 transition"
+>
+  <div className="flex items-center gap-2">
+    <Wallet size={18} variant="Bulk" />
+    Fund Wallet
+  </div>
+
+  <ArrowCircleRight
+    size={18}
+    variant="Bulk"
+    className="transition-transform group-hover:translate-x-1"
+  />
+</Link>
 
       <div className="mt-10 space-y-4">
         <div className="flex items-center justify-between">
