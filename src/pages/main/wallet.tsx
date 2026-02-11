@@ -54,7 +54,6 @@ export default function Wallet() {
   return (
     <MainLayout>
       <div className="space-y-6">
-        {/* Balance */}
         <div className="bg-white rounded-xl p-4 border border-line">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/10 center">
@@ -69,7 +68,6 @@ export default function Wallet() {
           </div>
         </div>
 
-        {/* Fund Wallet */}
         <div className="bg-secondary p-4 rounded-2xl space-y-6 border border-line">
           <h3 className="font-semibold">Fund Wallet</h3>
 
@@ -109,7 +107,6 @@ export default function Wallet() {
             </div>
           </div>
 
-          {/* Amount Section */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Select Amount</label>
 
@@ -141,14 +138,7 @@ export default function Wallet() {
             />
           </div>
 
-          <ButtonWithLoader
-            initialText="I have made payment"
-            loadingText="Submitting..."
-            loading={funding}
-            onClick={handleFund}
-            className="w-full btn-primary h-11 rounded-xl text-sm font-semibold"
-          />
-
+          {/* INFO BOX MOVED HERE */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-3">
             <InfoCircle
               size={16}
@@ -162,9 +152,16 @@ export default function Wallet() {
               immediately.
             </p>
           </div>
+
+          <ButtonWithLoader
+            initialText="I have made payment"
+            loadingText="Submitting..."
+            loading={funding}
+            onClick={handleFund}
+            className="w-full btn-primary h-11 rounded-xl text-sm font-semibold"
+          />
         </div>
 
-        {/* Transactions */}
         <div className="space-y-3">
           <h3 className="font-semibold">Transaction History</h3>
 
@@ -184,9 +181,15 @@ export default function Wallet() {
                     )}
                   >
                     {tx.type === "credit" ? (
-                      <ArrowDown size={18} className="text-green-600" />
+                      <ArrowDown
+                        size={18}
+                        className="text-green-600"
+                      />
                     ) : (
-                      <ArrowUp size={18} className="text-red-600" />
+                      <ArrowUp
+                        size={18}
+                        className="text-red-600"
+                      />
                     )}
                   </div>
 
