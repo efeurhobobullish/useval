@@ -6,6 +6,8 @@ import {
   Wallet,
   Heart,
   TickCircle,
+  CloseCircle,
+  Clock,
   ArrowCircleRight,
   InfoCircle,
 } from "iconsax-reactjs";
@@ -20,8 +22,11 @@ export default function Home() {
     loading,
   } = useWalletDashboard();
 
-  const totalCards = 0; // replace when cards API is ready
-  const acceptedCards = 0; // replace when cards API is ready
+  const totalCards = 0;
+  const acceptedCards = 0;
+  const pendingCards = 0;
+  const rejectedCards = 0;
+
   const totalSenders = transactions.length;
 
   const avatars = [
@@ -77,6 +82,7 @@ export default function Home() {
 
       <div className="bg-secondary p-2 rounded-2xl space-y-2">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+          {/* Wallet */}
           <div className="bg-white col-span-2 md:col-span-1 rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 center">
@@ -100,6 +106,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Total Cards */}
           <div className="bg-white rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-amber-100 center">
@@ -114,6 +121,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Accepted */}
           <div className="bg-white rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-green-100 center">
@@ -123,6 +131,36 @@ export default function Home() {
                 <p className="text-muted text-xs">Accepted</p>
                 <h4 className="font-bold text-lg">
                   <CountUp start={0} end={acceptedCards} duration={1.5} />
+                </h4>
+              </div>
+            </div>
+          </div>
+
+          {/* Pending */}
+          <div className="bg-white rounded-xl p-4 border border-line">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-blue-100 center">
+                <Clock size={20} className="text-blue-500" />
+              </div>
+              <div>
+                <p className="text-muted text-xs">Pending</p>
+                <h4 className="font-bold text-lg">
+                  <CountUp start={0} end={pendingCards} duration={1.5} />
+                </h4>
+              </div>
+            </div>
+          </div>
+
+          {/* Rejected */}
+          <div className="bg-white rounded-xl p-4 border border-line">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-red-100 center">
+                <CloseCircle size={20} className="text-red-500" />
+              </div>
+              <div>
+                <p className="text-muted text-xs">Rejected</p>
+                <h4 className="font-bold text-lg">
+                  <CountUp start={0} end={rejectedCards} duration={1.5} />
                 </h4>
               </div>
             </div>
@@ -153,4 +191,4 @@ export default function Home() {
       </div>
     </MainLayout>
   );
-    }
+                    }
