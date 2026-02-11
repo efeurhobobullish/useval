@@ -1,14 +1,22 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import { ScrollToTop } from "@/components/ui";
 import { Auth, Verify } from "./pages/auth";
-import { Card, CreateCard, Gift, Home, Success, Wallet } from "./pages/main";
+import {
+  Card,
+  CreateCard,
+  Gift,
+  Home,
+  Success,
+  Wallet,
+} from "./pages/main";
 
 export default function App() {
   return (
     <>
       <ScrollToTop />
       <Toaster position="top-center" richColors />
+
       <Routes>
         <Route path="/" element={<Auth />} />
         <Route path="/verify" element={<Verify />} />
