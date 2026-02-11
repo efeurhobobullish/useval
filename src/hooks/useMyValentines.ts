@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import api from "@/config/api";
 
 export type Valentine = {
@@ -10,14 +10,33 @@ export type Valentine = {
   reference: string;
 };
 
-const fetchMyValentines = async (): Promise<Valentine[]> => {
-  const { data } = await api.get("/v1/valentine/me");
-  return data.valentines;
+const useMyValentines = () => {
+  const [valentines, setValentines] = useState<Valentine[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchValentines = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get("/v1/valentine/me");
+      setValentines(res.data.valentines);
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Failed to fetch cards");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchValentines();
+  }, []);
+
+  return {
+    valentines,
+    loading,
+    error,
+    refetch: fetchValentines,
+  };
 };
 
-export const useMyValentines = () => {
-  return useQuery({
-    queryKey: ["my-valentines"],
-    queryFn: fetchMyValentines,
-  });
-};
+export default useMyValentines;
