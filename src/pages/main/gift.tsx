@@ -8,7 +8,7 @@ import {
 } from "@/components/ui";
 import { CallAdd, Wifi } from "iconsax-reactjs";
 import { toast } from "sonner";
-import { useValentines, Valentine } from "@/hooks";
+import useValentines from "@/hooks/useValentines"; import type { Valentine } from "@/hooks/useValentines";
 
 export default function Gift() {
   const navigate = useNavigate();
