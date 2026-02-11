@@ -6,7 +6,7 @@ import {
 } from "iconsax-reactjs";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useValentines } from "@/hooks";
+import useValentines from "@/hooks/useValentines";
 
 export default function History() {
   const { valentines, loading } = useValentines();
@@ -51,7 +51,7 @@ export default function History() {
     <div className="space-y-4">
       {valentines.map((card) => (
         <div
-          key={card._id}
+          key={card.id}
           className="bg-white p-4 rounded-xl border border-line flex items-center justify-between"
         >
           <div className="flex items-center gap-3">
