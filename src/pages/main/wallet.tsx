@@ -1,25 +1,25 @@
 import { useState } from "react";
-import clsx from "clsx";
-import { formatDate } from "@/helpers/formatDate";
 import { formatNumber } from "@/helpers/formatNumber";
 import { MainLayout } from "@/layouts";
 import {
   Wallet as WalletIcon,
   InfoCircle,
-  ArrowUp,
-  ArrowDown,
   Copy,
   TickCircle,
   CardEdit,
 } from "iconsax-reactjs";
 import { InputWithIcon, ButtonWithLoader } from "@/components/ui";
 import { toast } from "sonner";
-import useWallet from "@/hooks/useWallet";
-import useFundWallet from "@/hooks/useFundWallet";
+import { useWallet } from "@/hooks";
 
 export default function Wallet() {
-  const { balance, transactions = [], refetch } = useWallet();
-  const { fundWallet, loading: funding } = useFundWallet();
+  const {
+    balance,
+    loading,
+    fundWallet,
+    fundingLoading,
+    refetch,
+  } = useWallet();
 
   const [amount, setAmount] = useState(200);
   const [copied, setCopied] = useState(false);
@@ -43,6 +43,7 @@ export default function Wallet() {
     try {
       await fundWallet(amount);
       toast.success("Funding request submitted");
+      setAmount(0);
       refetch();
     } catch (err: any) {
       toast.error(
@@ -54,6 +55,7 @@ export default function Wallet() {
   return (
     <MainLayout>
       <div className="space-y-6">
+        {/* Wallet Balance */}
         <div className="bg-white rounded-xl p-4 border border-line">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-primary/10 center">
@@ -62,12 +64,13 @@ export default function Wallet() {
             <div>
               <p className="text-muted text-xs">Wallet Balance</p>
               <h4 className="font-bold text-lg">
-                ₦{formatNumber(balance)}
+                {loading ? "Loading..." : `₦${formatNumber(balance)}`}
               </h4>
             </div>
           </div>
         </div>
 
+        {/* Fund Wallet */}
         <div className="bg-secondary p-4 rounded-2xl space-y-6 border border-line">
           <h3 className="font-semibold">Fund Wallet</h3>
 
@@ -107,19 +110,21 @@ export default function Wallet() {
             </div>
           </div>
 
-           <div className="space-y-2">
-              <label className="text-sm font-medium">Input Amount</label>
+          {/* Amount Input */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Input Amount</label>
 
-              <InputWithIcon
+            <InputWithIcon
               type="number"
               icon={<CardEdit size={20} />}
               placeholder="Enter amount e.g 1000"
               className="bg-white"
               value={amount}
               onChange={(e) => setAmount(Number(e.target.value))}
-               />
+            />
           </div>
-          {/* INFO BOX MOVED HERE */}
+
+          {/* Info Box */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-3">
             <InfoCircle
               size={16}
@@ -137,67 +142,10 @@ export default function Wallet() {
           <ButtonWithLoader
             initialText="I have made payment"
             loadingText="Submitting..."
-            loading={funding}
+            loading={fundingLoading}
             onClick={handleFund}
             className="w-full btn-primary h-11 rounded-xl text-sm font-semibold"
           />
-        </div>
-
-        <div className="space-y-3">
-          <h3 className="font-semibold">Transaction History</h3>
-
-          <div className="bg-white rounded-xl border border-line divide-y divide-line">
-            {transactions.map((tx) => (
-              <div
-                key={tx._id}
-                className="flex items-center justify-between p-4"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={clsx(
-                      "h-9 w-9 rounded-full center",
-                      tx.type === "credit"
-                        ? "bg-green-100"
-                        : "bg-red-100"
-                    )}
-                  >
-                    {tx.type === "credit" ? (
-                      <ArrowDown
-                        size={18}
-                        className="text-green-600"
-                      />
-                    ) : (
-                      <ArrowUp
-                        size={18}
-                        className="text-red-600"
-                      />
-                    )}
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-medium">
-                      {tx.description}
-                    </p>
-                    <p className="text-xs text-muted">
-                      {formatDate(new Date(tx.createdAt))}
-                    </p>
-                  </div>
-                </div>
-
-                <p
-                  className={clsx(
-                    "text-sm font-semibold",
-                    tx.type === "credit"
-                      ? "text-green-600"
-                      : "text-red-600"
-                  )}
-                >
-                  {tx.type === "credit" ? "+" : "-"}₦
-                  {formatNumber(tx.amount)}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </MainLayout>
