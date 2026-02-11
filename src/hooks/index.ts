@@ -5,4 +5,4 @@ export {default as useValentines} from "./useValentines";
 export {default as useCreateValentine} from "./useCreateValentine";
 export {default as usePublicValentine} from "./usePublicValentine";
 export {default as useAcceptValentine} from "./useAcceptValentine";
-export {default as PublicValentine} from "./PublicValentine";
+export {default as usePublicValentine} from "./usePublicValentine";
