@@ -1,11 +1,11 @@
-import { InputWithIcon } from "@/components/ui";
+import { InputWithIcon, ButtonWithLoader } from "@/components/ui";
 import { MainLayout } from "@/layouts";
 import clsx from "clsx";
 import { CardEdit, User } from "iconsax-reactjs";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { useCreateValentine } from "@/hooks";
+import useCreateValentine from "@/hooks/useCreateValentine";
 
 export default function CreateCard() {
   const navigate = useNavigate();
@@ -149,12 +149,12 @@ export default function CreateCard() {
           </div>
         )}
 
-        <button
-          disabled={loading}
-          className="btn bg-primary text-white w-full py-3 rounded-xl font-semibold disabled:opacity-60"
-        >
-          {loading ? "Creating..." : "Create Valentine Card 💌"}
-        </button>
+        <ButtonWithLoader
+          initialText="Create Valentine Card 💌"
+          loadingText="Creating..."
+          loading={loading}
+          className="w-full btn-primary h-11 rounded-xl text-sm font-semibold"
+        />
       </form>
     </MainLayout>
   );
