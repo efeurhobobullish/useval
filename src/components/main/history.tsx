@@ -6,7 +6,6 @@ import { useValentines } from "@/hooks";
 
 export default function History() {
   const { valentines, loading } = useValentines();
-
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleCopy = (reference: string) => {
@@ -30,12 +29,19 @@ export default function History() {
   return (
     <div className="space-y-4">
       {valentines.length === 0 && (
-        <div className="bg-secondary p-6 min-h-[260px] center rounded-xl border border-line">
-          <div className="text-center space-y-2">
-            <p className="text-muted text-sm">No cards found</p>
-            <Link to="/create" className="text-primary text-sm font-semibold">
-              Create your first Valentine →
-            </Link>
+        <div className="bg-secondary p-8 min-h-[260px] center rounded-xl border border-line">
+          <div className="text-center space-y-4 max-w-sm">
+            <div className="h-16 w-16 rounded-full bg-primary/10 center mx-auto">
+              <Heart size={28} variant="Bulk" className="text-primary" />
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold">No Valentine Cards Yet</h4>
+              <p className="text-sm text-muted leading-relaxed">
+                Surprise someone special today. Write something sweet, add a
+                little airtime gift, and make them smile.
+              </p>
+            </div>
           </div>
         </div>
       )}
