@@ -68,37 +68,38 @@ export default function History() {
             </div>
 
             <div className="flex items-center gap-3">
-              {card.status === "accepted" && (
-                <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
-                  <TickCircle size={14} />
-                  Accepted
-                </span>
-              )}
+  {card.status === "accepted" && (
+    <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+      <TickCircle size={14} />
+      Accepted
+    </span>
+  )}
 
-              {card.status === "pending" && (
-                <span className="text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
-                  Pending
-                </span>
-              )}
+  {card.status === "pending" && (
+    <span className="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
+      <Heart size={14} />
+      Pending
+    </span>
+  )}
 
-              {card.status === "rejected" && (
-                <span className="flex items-center gap-1 text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
-                  <CloseCircle size={14} />
-                  Rejected
-                </span>
-              )}
+  {card.status === "rejected" && (
+    <span className="flex items-center gap-1 text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
+      <CloseCircle size={14} />
+      Rejected
+    </span>
+  )}
 
-              <button
-                onClick={() => handleCopy(card.reference)}
-                className="h-9 w-9 rounded-full bg-secondary center hover:bg-primary/10"
-              >
-                {copiedId === card.reference ? (
-                  <TickCircle size={16} className="text-green-600" />
-                ) : (
-                  <Copy size={16} className="text-primary" />
-                )}
-              </button>
-            </div>
+  <button
+    onClick={() => handleCopy(card.reference)}
+    className="h-9 w-9 rounded-full bg-secondary center hover:bg-primary/10"
+  >
+    {copiedId === card.reference ? (
+      <TickCircle size={16} className="text-green-600" />
+    ) : (
+      <Copy size={16} className="text-primary" />
+    )}
+  </button>
+</div>
           </div>
         ))}
     </div>
