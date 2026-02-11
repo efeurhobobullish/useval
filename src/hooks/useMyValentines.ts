@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import api from "@/config/api";
 
 export type Valentine = {
   id: string;
@@ -11,10 +11,7 @@ export type Valentine = {
 };
 
 const fetchMyValentines = async (): Promise<Valentine[]> => {
-  const { data } = await axios.get("/v1/valentine/me", {
-    withCredentials: true,
-  });
-
+  const { data } = await api.get("/v1/valentine/me");
   return data.valentines;
 };
 
