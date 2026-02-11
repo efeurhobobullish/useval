@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import api from "@/config/api";
 
 export type PublicValentine = {
+  _id: string;
   recipientName: string;
   pickupLine?: string;
+  thankYouMessage?: string;
   sendAirtime: boolean;
+  amount: number;
+  status: "pending" | "accepted" | "rejected";
   reference: string;
+  createdAt: string;
 };
 
 const usePublicValentine = (reference?: string) => {
@@ -18,7 +23,9 @@ const usePublicValentine = (reference?: string) => {
 
     try {
       setLoading(true);
+
       const res = await api.get(`/v1/valentine/view/${reference}`);
+
       setValentine(res.data.valentine);
       setError(null);
     } catch (err: any) {
