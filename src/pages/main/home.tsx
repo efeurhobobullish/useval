@@ -6,23 +6,22 @@ import {
   Wallet as WalletIcon,
   Heart,
   TickCircle,
-  CloseCircle,
   Clock,
   InfoCircle,
 } from "iconsax-reactjs";
 import { Link } from "react-router-dom";
-import { useWalletDashboard, useWallet } from "@/hooks";
+import { useWallet, useValentines } from "@/hooks";
 
 export default function Home() {
   const { balance = 0, loading: walletLoading } = useWallet();
 
   const {
-    firstName,
-    transactions = [],
-    stats = { total: 0, accepted: 0, pending: 0, rejected: 0 },
-  } = useWalletDashboard();
+    stats,
+    valentines,
+    loading: valentineLoading,
+  } = useValentines();
 
-  const totalSenders = transactions.length;
+  const totalSenders = valentines.length;
 
   const avatars = [
     "Gift Jacksun",
@@ -37,7 +36,7 @@ export default function Home() {
     <MainLayout>
       <div className="space-y-1 flex md:items-center justify-between md:flex-row flex-col">
         <h3 className="text-xl font-bold">
-          Hey, <span className="text-muted">{firstName || "There"}</span> 👋
+          Hey 👋
         </h3>
 
         <div className="flex md:flex-row flex-col md:items-center md:gap-3 gap-2 mt-3 flex-wrap">
@@ -62,7 +61,7 @@ export default function Home() {
               separator=","
               preserveValue
             />
-            + people already sent Valentine gifts
+            + cards created
           </p>
         </div>
       </div>
@@ -73,15 +72,14 @@ export default function Home() {
           className="text-amber-500 mt-0.5 flex-shrink-0"
         />
         <p className="text-xs font-medium text-amber-800 leading-relaxed">
-          The wallet is used only for airtime gifts. Creating and sharing
-          Valentine cards is free.
+          Wallet is used only for airtime gifts.
         </p>
       </div>
 
       <div className="bg-secondary p-2 rounded-2xl space-y-3">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
 
-          {/* Wallet Balance from useWallet */}
+          {/* Wallet Balance */}
           <div className="bg-white col-span-2 md:col-span-1 rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 center">
@@ -97,7 +95,6 @@ export default function Home() {
                       end={balance}
                       duration={1.8}
                       separator=","
-                      preserveValue
                     />
                   ) : (
                     "0"
@@ -114,7 +111,7 @@ export default function Home() {
                 <Heart size={20} className="text-amber-500" />
               </div>
               <div>
-                <p className="text-muted text-xs">Total Cards</p>
+                <p className="text-muted text-xs">Total</p>
                 <h4 className="font-bold text-lg">
                   <CountUp start={0} end={stats.total} duration={1.5} />
                 </h4>
@@ -152,20 +149,21 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Rejected */}
+          {/* Expired */}
           <div className="bg-white rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-red-100 center">
-                <CloseCircle size={20} className="text-red-500" />
+              <div className="h-10 w-10 rounded-full bg-gray-100 center">
+                <Clock size={20} className="text-gray-500" />
               </div>
               <div>
-                <p className="text-muted text-xs">Rejected</p>
+                <p className="text-muted text-xs">Expired</p>
                 <h4 className="font-bold text-lg">
-                  <CountUp start={0} end={stats.rejected} duration={1.5} />
+                  <CountUp start={0} end={stats.expired} duration={1.5} />
                 </h4>
               </div>
             </div>
           </div>
+
         </div>
 
         <Link
@@ -179,7 +177,7 @@ export default function Home() {
 
       <div className="mt-10 space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold">Valentine Cards</h3>
+          <h3 className="font-semibold">Your Valentine Cards</h3>
           <Link
             to="/create"
             className="btn bg-primary/20 text-primary font-semibold text-sm px-4 h-10 rounded-lg flex items-center gap-2"
