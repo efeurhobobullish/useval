@@ -17,32 +17,33 @@ export default function CreateCard() {
   const [sendAirtime, setSendAirtime] = useState(false);
   const [amount, setAmount] = useState(500);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  
+      const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    if (!recipientName.trim()) {
-      toast.error("Recipient name is required");
-      return;
-    }
+  if (!recipientName.trim()) {
+    toast.error("Recipient name is required");
+    return;
+  }
 
-    try {
-      const payload = {
-        recipientName,
-        pickupLine,
-        thankYouMessage,
-        sendAirtime,
-        amount: sendAirtime ? amount : 0,
-      };
+  try {
+    const payload = {
+      recipientName,
+      pickupLine,
+      thankYouMessage,
+      sendAirtime,
+      amount: sendAirtime ? amount : 0,
+    };
 
-      const res = await createValentine(payload);
+    await createValentine(payload);
 
-      toast.success("Valentine card created 💖");
+    toast.success("Valentine card created 💖");
 
-      navigate(`/card/${res.valentine.reference}`);
-    } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Something went wrong");
-    }
-  };
+    navigate("/home");
+  } catch (err: any) {
+    toast.error(err?.response?.data?.message || "Something went wrong");
+  }
+};
 
   return (
     <MainLayout>
