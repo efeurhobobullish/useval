@@ -6,7 +6,7 @@ import {
 } from "iconsax-reactjs";
 import { useState } from "react";
 import { toast } from "sonner";
-import useValentines from "@/hooks/useValentines";
+import { useValentines } from "@/hooks";
 
 export default function History() {
   const { valentines, loading } = useValentines();
