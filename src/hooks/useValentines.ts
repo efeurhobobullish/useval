@@ -1,125 +1,143 @@
-import { useEffect, useState } from "react";
-import api from "@/config/api";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { CardLayout } from "@/layouts";
+import {
+  InputWithIcon,
+  SelectWithIcon,
+  ButtonWithLoader,
+} from "@/components/ui";
+import { CallAdd, Wifi } from "iconsax-reactjs";
+import { toast } from "sonner";
+import { useValentines } from "@/hooks";
 
-export type ValentineStatus = "pending" | "accepted" | "expired";
+export default function Gift() {
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-export type Valentine = {
-  id: string;
-  reference: string;
-  loversName: string;
-  pickupLine?: string | null;
-  thankYouMessage?: string | null;
-  sendAirtime: boolean;
-  airtimeAmount: number;
-  status: ValentineStatus;
-  createdAt: string;
-  expiresAt: string;
-};
-
-export type ValentineStats = {
-  total: number;
-  pending: number;
-  accepted: number;
-  expired: number;
-};
-
-const useValentines = () => {
-  const [valentines, setValentines] = useState<Valentine[]>([]);
-  const [stats, setStats] = useState<ValentineStats>({
-    total: 0,
-    pending: 0,
-    accepted: 0,
-    expired: 0,
-  });
-
-  const [loading, setLoading] = useState(true);
-  const [creating, setCreating] = useState(false);
-  const [accepting, setAccepting] = useState(false);
-
-  /* ================= FETCH ================= */
-
-  const fetchValentines = async () => {
-    const res = await api.get("/v1/valentine/me");
-    setValentines(res.data.valentines || []);
-  };
-
-  const fetchStats = async () => {
-    const res = await api.get("/v1/valentine/me/stats");
-    setStats(res.data.stats);
-  };
-
-  /* ================= CREATE ================= */
-
-  const createValentine = async (payload: {
-    recipientName: string;
-    pickupLine?: string;
-    thankYouMessage?: string;
-    sendAirtime: boolean;
-    amount?: number;
-  }) => {
-    setCreating(true);
-    try {
-      const res = await api.post("/v1/valentine", payload);
-      await Promise.all([fetchValentines(), fetchStats()]);
-      return res.data;
-    } finally {
-      setCreating(false);
-    }
-  };
-
-  /* ================= GET BY ID ================= */
-
-  const getMyValentineById = async (id: string) => {
-    const res = await api.get(`/v1/valentine/me/${id}`);
-    return res.data.valentine;
-  };
-
-  /* ================= PUBLIC VIEW ================= */
-
-  const getByReference = async (reference: string) => {
-    const res = await api.get(`/v1/valentine/view/${reference}`);
-    return res.data.valentine;
-  };
-
-  /* ================= ACCEPT ================= */
-
-  const acceptValentine = async (
-    reference: string,
-    payload?: { phone?: string; network?: string }
-  ) => {
-    setAccepting(true);
-    try {
-      const res = await api.post(
-        `/v1/valentine/accept/${reference}`,
-        payload || {}
-      );
-      return res.data;
-    } finally {
-      setAccepting(false);
-    }
-  };
-
-  /* ================= INIT ================= */
-
-  useEffect(() => {
-    Promise.all([fetchValentines(), fetchStats()]).finally(() =>
-      setLoading(false)
-    );
-  }, []);
-
-  return {
-    valentines,
-    stats,
-    loading,
-    creating,
-    accepting,
-    refetch: fetchValentines,
-    refetchStats: fetchStats,
-    createValentine,
-    getMyValentineById,
+  const {
     getByReference,
     acceptValentine,
-  };
-};
+    accepting,
+  } = useValentines();
 
-export default useValentines;
+  const [valentine, setValentine] = useState<any>(null);
+  const [loadingCard, setLoadingCard] = useState(true);
+
+  const [network, setNetwork] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const isValid = network && phone.length >= 10;
+
+  /* FETCH PUBLIC CARD */
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchCard = async () => {
+      try {
+        const data = await getByReference(id);
+        setValentine(data);
+      } catch {
+        setValentine(null);
+      } finally {
+        setLoadingCard(false);
+      }
+    };
+
+    fetchCard();
+  }, [id]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!id || !isValid) return;
+
+    try {
+      await acceptValentine(id, { network, phone });
+
+      toast.success("Airtime sent successfully");
+
+      navigate(`/card/${id}/success`);
+    } catch (err: any) {
+      toast.error(
+        err?.response?.data?.message || "Failed to send airtime"
+      );
+    }
+  };
+
+  if (loadingCard) {
+    return (
+      <CardLayout>
+        <p className="text-center text-muted">Loading...</p>
+      </CardLayout>
+    );
+  }
+
+  if (!valentine) {
+    return (
+      <CardLayout>
+        <p className="text-center text-muted">
+          Valentine not available
+        </p>
+      </CardLayout>
+    );
+  }
+
+  return (
+    <CardLayout>
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-md mx-auto bg-secondary text-left p-6 rounded-xl border border-line space-y-6"
+      >
+        <div className="text-center space-y-2">
+          <h2 className="text-xl font-semibold">
+            Collect your{" "}
+            <span className="text-primary font-bold">
+              ₦{valentine.airtimeAmount}
+            </span>{" "}
+            airtime gift
+          </h2>
+
+          <p className="text-sm text-muted">
+            Select your network and enter your phone number.
+          </p>
+        </div>
+
+        <SelectWithIcon
+          icon={<Wifi size={20} />}
+          label="Network"
+          value={network}
+          className="bg-white"
+          onChange={(e) => setNetwork(e.target.value)}
+          options={[
+            { value: "mtn", label: "MTN" },
+            { value: "airtel", label: "Airtel" },
+            { value: "glo", label: "Glo" },
+            { value: "9mobile", label: "9mobile" },
+          ]}
+        />
+
+        <InputWithIcon
+          icon={<CallAdd variant="Bulk" size={20} />}
+          type="tel"
+          label="Phone number"
+          placeholder="08012345678"
+          value={phone}
+          className="bg-white"
+          onChange={(e) => setPhone(e.target.value)}
+        />
+
+        <ButtonWithLoader
+          initialText="I accept your gift"
+          loadingText="Sending gift..."
+          loading={accepting}
+          disabled={!isValid}
+          className="w-full btn-primary h-11 rounded-lg font-semibold"
+        />
+
+        <p className="text-xs text-muted text-center">
+          Airtime will be credited instantly.
+        </p>
+      </form>
+    </CardLayout>
+  );
+}
