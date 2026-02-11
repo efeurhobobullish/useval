@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "@/config/api";
 
-/* ================= TYPES ================= */
-
 export type ValentineStatus = "pending" | "accepted" | "expired";
 
 export type Valentine = {
-  _id: string;
+  id: string;
   reference: string;
   loversName: string;
   pickupLine?: string | null;
@@ -25,8 +23,6 @@ export type ValentineStats = {
   expired: number;
 };
 
-/* ================= HOOK ================= */
-
 const useValentines = () => {
   const [valentines, setValentines] = useState<Valentine[]>([]);
   const [stats, setStats] = useState<ValentineStats>({
@@ -35,59 +31,58 @@ const useValentines = () => {
     accepted: 0,
     expired: 0,
   });
+
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [accepting, setAccepting] = useState(false);
 
-  /* FETCH MY VALENTINES */
+  /* ================= FETCH ================= */
+
   const fetchValentines = async () => {
-    try {
-      const res = await api.get("/v1/valentine/me");
-      setValentines(res.data.valentines || []);
-    } finally {
-      setLoading(false);
-    }
+    const res = await api.get("/v1/valentine/me");
+    setValentines(res.data.valentines || []);
   };
 
-  /* FETCH STATS */
   const fetchStats = async () => {
     const res = await api.get("/v1/valentine/me/stats");
     setStats(res.data.stats);
   };
 
-  /* CREATE */
-  /* CREATE */
-const createValentine = async (payload: {
-  loversName: string;
-  pickupLine?: string;
-  thankYouMessage?: string;
-  sendAirtime: boolean;
-  amount?: number;
-}) => {
-  setCreating(true);
-  try {
-    const res = await api.post("/v1/valentine", payload);
-    await fetchValentines();
-    await fetchStats();
-    return res.data;
-  } finally {
-    setCreating(false);
-  }
-};
+  /* ================= CREATE ================= */
 
-  /* GET BY ID */
+  const createValentine = async (payload: {
+    recipientName: string;
+    pickupLine?: string;
+    thankYouMessage?: string;
+    sendAirtime: boolean;
+    amount?: number;
+  }) => {
+    setCreating(true);
+    try {
+      const res = await api.post("/v1/valentine", payload);
+      await Promise.all([fetchValentines(), fetchStats()]);
+      return res.data;
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  /* ================= GET BY ID ================= */
+
   const getMyValentineById = async (id: string) => {
     const res = await api.get(`/v1/valentine/me/${id}`);
     return res.data.valentine;
   };
 
-  /* PUBLIC VIEW */
+  /* ================= PUBLIC VIEW ================= */
+
   const getByReference = async (reference: string) => {
     const res = await api.get(`/v1/valentine/view/${reference}`);
     return res.data.valentine;
   };
 
-  /* ACCEPT */
+  /* ================= ACCEPT ================= */
+
   const acceptValentine = async (
     reference: string,
     payload?: { phone?: string; network?: string }
@@ -104,7 +99,8 @@ const createValentine = async (payload: {
     }
   };
 
-  /* INIT */
+  /* ================= INIT ================= */
+
   useEffect(() => {
     Promise.all([fetchValentines(), fetchStats()]).finally(() =>
       setLoading(false)
