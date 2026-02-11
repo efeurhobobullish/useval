@@ -18,10 +18,10 @@ import useWallet from "@/hooks/useWallet";
 import useFundWallet from "@/hooks/useFundWallet";
 
 export default function Wallet() {
-  const { balance, transactions, loading, refetch } = useWallet();
+  const { balance, transactions = [], loading, refetch } = useWallet();
   const { fundWallet, loading: funding } = useFundWallet();
 
-  const [amount, setAmount] = useState(200);
+  const [amount, setAmount] = useState<number>(200);
   const [copied, setCopied] = useState(false);
 
   const accountNumber = "8137411338";
@@ -62,7 +62,7 @@ export default function Wallet() {
             <div>
               <p className="text-muted text-xs">Wallet Balance</p>
               <h4 className="font-bold text-lg">
-                ₦{formatNumber(balance)}
+                ₦{formatNumber(balance || 0)}
               </h4>
             </div>
           </div>
@@ -83,6 +83,7 @@ export default function Wallet() {
               </div>
 
               <button
+                type="button"
                 onClick={handleCopy}
                 className="h-9 w-9 rounded-full bg-secondary center hover:bg-primary/10 transition"
               >
@@ -134,11 +135,12 @@ export default function Wallet() {
               placeholder="Custom amount"
               className="bg-white"
               value={amount}
-              onChange={(e) => setAmount(Number(e.target.value))}
+              onChange={(e) => setAmount(Number(e.target.value) || 0)}
             />
           </div>
 
           <ButtonWithLoader
+            type="button"
             initialText="I have made payment"
             loadingText="Submitting..."
             loading={funding}
@@ -162,6 +164,12 @@ export default function Wallet() {
           <h3 className="font-semibold">Transaction History</h3>
 
           <div className="bg-white rounded-xl border border-line divide-y divide-line">
+            {!transactions.length && (
+              <div className="p-6 text-center text-sm text-muted">
+                No transactions yet
+              </div>
+            )}
+
             {transactions.map((tx) => (
               <div
                 key={tx._id}
@@ -177,15 +185,9 @@ export default function Wallet() {
                     )}
                   >
                     {tx.type === "credit" ? (
-                      <ArrowDown
-                        size={18}
-                        className="text-green-600"
-                      />
+                      <ArrowDown size={18} className="text-green-600" />
                     ) : (
-                      <ArrowUp
-                        size={18}
-                        className="text-red-600"
-                      />
+                      <ArrowUp size={18} className="text-red-600" />
                     )}
                   </div>
 
