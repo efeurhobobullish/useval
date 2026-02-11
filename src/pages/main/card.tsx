@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { CardLayout } from "@/layouts";
 
 export default function Card() {
@@ -13,10 +13,11 @@ export default function Card() {
   };
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [activated, setActivated] = useState(false);
 
   const moveButton = () => {
-    const maxX = window.innerWidth - 160;
-    const maxY = window.innerHeight - 200;
+    const maxX = window.innerWidth - 200;
+    const maxY = window.innerHeight - 300;
 
     const randomX = Math.random() * maxX - maxX / 2;
     const randomY = Math.random() * maxY - maxY / 2;
@@ -27,6 +28,15 @@ export default function Card() {
     });
   };
 
+  const handleNoClick = () => {
+    if (!activated) {
+      setActivated(true);
+      moveButton();
+    } else {
+      moveButton();
+    }
+  };
+
   const handleYes = () => {
     if (card.hasAirtime) {
       navigate(`/card/${id}/gift`);
@@ -34,14 +44,6 @@ export default function Card() {
       navigate(`/card/${id}/success`);
     }
   };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      moveButton();
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <CardLayout>
@@ -56,8 +58,8 @@ export default function Card() {
         </p>
       </div>
 
-      <div className="relative mt-12 h-40 flex items-center justify-center">
-        {/* YES BUTTON */}
+      <div className="relative mt-12 h-40 flex items-center justify-center gap-6">
+        {/* YES */}
         <button
           onClick={handleYes}
           className="btn bg-primary text-white px-8 py-3 rounded-xl font-semibold z-10"
@@ -65,22 +67,24 @@ export default function Card() {
           Yes ❤️
         </button>
 
-        {/* RUNNING NO BUTTON */}
+        {/* NO */}
         <button
-          onMouseEnter={moveButton}
-          onClick={moveButton}
-          onTouchStart={moveButton}
+          onClick={handleNoClick}
+          onMouseEnter={activated ? moveButton : undefined}
+          onTouchStart={activated ? moveButton : undefined}
           style={{
-            transform: `translate(${position.x}px, ${position.y}px)`,
+            transform: activated
+              ? `translate(${position.x}px, ${position.y}px)`
+              : "translate(0px, 0px)",
           }}
-          className="btn bg-secondary border border-line text-main px-8 py-3 rounded-xl font-semibold absolute transition-all duration-300 ease-in-out"
+          className="btn bg-secondary border border-line text-main px-8 py-3 rounded-xl font-semibold transition-all duration-300 ease-in-out absolute"
         >
           No 💔
         </button>
       </div>
 
       <p className="text-xs text-muted mt-6 text-center">
-        You can try, but destiny is faster 😏
+        Click No if you dare 😏
       </p>
 
       <p className="text-xs text-muted mt-8 text-center leading-relaxed">
@@ -92,7 +96,7 @@ export default function Card() {
           className="text-primary underline font-semibold"
         >
           Useval.com
-        </a>{" "}
+        </a>
         <br />
         Built by{" "}
         <a
