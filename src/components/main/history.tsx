@@ -1,4 +1,4 @@
-import { Copy, Heart, TickCircle, CloseCircle } from "iconsax-reactjs";
+import { Copy, Heart, TickCircle, CloseCircle, Clock } from "iconsax-reactjs";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useValentines } from "@/hooks";
@@ -76,11 +76,11 @@ export default function History() {
   )}
 
   {card.status === "pending" && (
-    <span className="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
-      <Heart size={14} />
-      Pending
-    </span>
-  )}
+  <span className="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
+    <Clock size={14} />
+    Pending
+  </span>
+)}
 
   {card.status === "rejected" && (
     <span className="flex items-center gap-1 text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
