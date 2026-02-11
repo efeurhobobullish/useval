@@ -6,7 +6,6 @@ import { useValentines } from "@/hooks";
 
 export default function History() {
   const { valentines, loading } = useValentines();
-
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleCopy = (reference: string) => {
@@ -19,7 +18,7 @@ export default function History() {
 
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-xl border border-line text-center">
+      <div className="p-6 rounded-xl border border-line text-center">
         <p className="text-sm text-muted">Loading cards...</p>
       </div>
     );
@@ -28,7 +27,7 @@ export default function History() {
   return (
     <div className="space-y-4">
       {valentines.length === 0 && (
-        <div className="relative overflow-hidden rounded-2xl border border-line bg-white p-10 flex flex-col items-center text-center space-y-6">
+        <div className="rounded-2xl border border-line p-10 flex flex-col items-center text-center space-y-6">
           <div className="h-20 w-20 rounded-full bg-primary/10 center">
             <Heart size={36} variant="Bulk" className="text-primary" />
           </div>
@@ -44,7 +43,7 @@ export default function History() {
 
           <Link
             to="/create"
-            className="btn bg-primary text-white h-11 px-6 rounded-xl text-sm font-semibold"
+            className="btn bg-primary/20 text-primary font-semibold text-sm px-6 h-11 rounded-xl"
           >
             Create Your First Card
           </Link>
@@ -55,7 +54,7 @@ export default function History() {
         valentines.map((card) => (
           <div
             key={card._id}
-            className="bg-white p-4 rounded-xl border border-line flex items-center justify-between"
+            className="p-4 rounded-xl border border-line flex items-center justify-between"
           >
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 center">
