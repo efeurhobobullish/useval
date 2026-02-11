@@ -1,30 +1,58 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CardLayout } from "@/layouts";
-import { InputWithIcon, SelectWithIcon, ButtonWithLoader } from "@/components/ui";
+import {
+  InputWithIcon,
+  SelectWithIcon,
+  ButtonWithLoader,
+} from "@/components/ui";
 import { CallAdd, Wifi } from "iconsax-reactjs";
 import { toast } from "sonner";
-import { usePublicValentine, useAcceptValentine} from "@/hooks";
+import { useValentines } from "@/hooks";
 
 export default function Gift() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { valentine, loading: loadingCard } = usePublicValentine(id);
-  const { acceptValentine, loading } = useAcceptValentine();
+  const {
+    getByReference,
+    acceptValentine,
+    accepting,
+  } = useValentines();
+
+  const [valentine, setValentine] = useState<any>(null);
+  const [loadingCard, setLoadingCard] = useState(true);
 
   const [network, setNetwork] = useState("");
   const [phone, setPhone] = useState("");
 
-  const isValid = network && phone.length >= 10;
+  const isValid = network !== "" && phone.length >= 10;
+
+  useEffect(() => {
+    const loadCard = async () => {
+      if (!id) return;
+
+      try {
+        const data = await getByReference(id);
+        setValentine(data);
+      } catch {
+        setValentine(null);
+      } finally {
+        setLoadingCard(false);
+      }
+    };
+
+    loadCard();
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!id || !isValid) return;
 
     try {
       await acceptValentine(id, { network, phone });
-      toast.success("Airtime sent successfully 💖");
+      toast.success("Airtime sent successfully");
       navigate(`/card/${id}/success`);
     } catch (err: any) {
       toast.error(
@@ -61,10 +89,11 @@ export default function Gift() {
           <h2 className="text-xl font-semibold">
             Collect your{" "}
             <span className="text-primary font-bold">
-              ₦{valentine.amount}
+              ₦{valentine.airtimeAmount}
             </span>{" "}
-            airtime gift 🎁
+            airtime gift
           </h2>
+
           <p className="text-sm text-muted">
             Select your network and enter your phone number.
           </p>
@@ -95,9 +124,9 @@ export default function Gift() {
         />
 
         <ButtonWithLoader
-          initialText="I accept your gift 💖"
+          initialText="I accept your gift"
           loadingText="Sending gift..."
-          loading={loading}
+          loading={accepting}
           disabled={!isValid}
           className="w-full btn-primary h-11 rounded-lg font-semibold"
         />
