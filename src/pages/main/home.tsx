@@ -28,7 +28,6 @@ export default function Home() {
     "Amaka Bello",
     "Tunde Ajayi",
     "Sarah Kim",
-    "John Doe",
   ];
 
   return (
@@ -75,7 +74,8 @@ export default function Home() {
           className="text-amber-500 mt-0.5 flex-shrink-0"
         />
         <p className="text-xs font-medium text-amber-800 leading-relaxed">
-          Wallet is used only for airtime gifts.
+          The wallet is used only for airtime gifts. Creating and sharing
+          Valentine cards is completely free; spread the love without limits 💖
         </p>
       </div>
 
