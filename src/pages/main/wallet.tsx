@@ -22,13 +22,13 @@ export default function Wallet() {
     loading,
     fundWallet,
     fundingLoading,
-    refetch,
+    refetch: refetchWallet,
   } = useWallet();
 
   const {
     transactions,
     loading: txLoading,
-    fetchTransactions,
+    refetch,
   } = useTransactions();
 
   const [amount, setAmount] = useState<number>(200);
@@ -38,7 +38,7 @@ export default function Wallet() {
   const accountName = "Gift Uwem Jackson";
 
   useEffect(() => {
-    fetchTransactions();
+    refetch();
   }, []);
 
   const handleCopy = () => {
@@ -58,8 +58,8 @@ export default function Wallet() {
       await fundWallet(amount);
       toast.success("Funding request submitted");
       setAmount(0);
+      refetchWallet();
       refetch();
-      fetchTransactions();
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message || "Unable to submit request"
@@ -148,7 +148,7 @@ export default function Wallet() {
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-3">
             <InfoCircle size={16} className="text-amber-500 mt-0.5" />
             <p className="text-xs font-medium text-amber-800 leading-relaxed">
-              After making payment click the button below. Your wallet will be credited after confirmation.
+              After payment click the button below. Your wallet will be credited after confirmation.
             </p>
           </div>
 
