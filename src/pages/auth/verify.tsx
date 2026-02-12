@@ -8,7 +8,6 @@ const avatars = [
   "Amaka Bello",
   "Tunde Ajayi",
   "Sarah Kim",
-  "John Doe",
 ];
 
 export default function Auth() {
