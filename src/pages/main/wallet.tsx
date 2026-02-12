@@ -16,7 +16,6 @@ import { InputWithIcon, ButtonWithLoader } from "@/components/ui";
 import { toast } from "sonner";
 import { useWallet, useTransactions } from "@/hooks";
 
-
 export default function Wallet() {
   const {
     balance,
@@ -143,7 +142,7 @@ export default function Wallet() {
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-3">
             <InfoCircle size={16} className="text-amber-500 mt-0.5" />
             <p className="text-xs font-medium text-amber-800 leading-relaxed">
-              After payment, click the button below to notify us.
+              After making payment, click the button below to notify us.
               Your wallet will be credited once confirmed.
             </p>
           </div>
@@ -162,60 +161,58 @@ export default function Wallet() {
           <h3 className="font-semibold">Transaction History</h3>
 
           <div className="bg-white rounded-xl border border-line divide-y divide-line">
-            {txLoading && (
+            {txLoading ? (
               <div className="p-4 text-sm text-muted">
                 Loading transactions...
               </div>
-            )}
-
-            {!txLoading && transactions.length === 0 && (
+            ) : transactions.length === 0 ? (
               <div className="p-4 text-sm text-muted">
-                No transactions yet
+                No transactions yet.
               </div>
-            )}
+            ) : (
+              transactions.map((tx) => (
+                <div
+                  key={tx.id}
+                  className="flex items-center justify-between p-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`h-9 w-9 rounded-full center ${
+                        tx.type === "credit"
+                          ? "bg-green-100"
+                          : "bg-red-100"
+                      }`}
+                    >
+                      {tx.type === "credit" ? (
+                        <ArrowDown size={18} className="text-green-600" />
+                      ) : (
+                        <ArrowUp size={18} className="text-red-600" />
+                      )}
+                    </div>
 
-            {transactions.map((tx) => (
-              <div
-                key={tx.id}
-                className="flex items-center justify-between p-4"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`h-9 w-9 rounded-full center ${
+                    <div>
+                      <p className="text-sm font-medium capitalize">
+                        {tx.description}
+                      </p>
+                      <p className="text-xs text-muted">
+                        {formatDate(new Date(tx.createdAt))}
+                      </p>
+                    </div>
+                  </div>
+
+                  <p
+                    className={`text-sm font-semibold ${
                       tx.type === "credit"
-                        ? "bg-green-100"
-                        : "bg-red-100"
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
-                    {tx.type === "credit" ? (
-                      <ArrowDown size={18} className="text-green-600" />
-                    ) : (
-                      <ArrowUp size={18} className="text-red-600" />
-                    )}
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-medium capitalize">
-                      {tx.description}
-                    </p>
-                    <p className="text-xs text-muted">
-                      {formatDate(tx.createdAt)}
-                    </p>
-                  </div>
+                    {tx.type === "credit" ? "+" : "-"}₦
+                    {formatNumber(tx.amount)}
+                  </p>
                 </div>
-
-                <p
-                  className={`text-sm font-semibold ${
-                    tx.type === "credit"
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {tx.type === "credit" ? "+" : "-"}₦
-                  {formatNumber(tx.amount)}
-                </p>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
