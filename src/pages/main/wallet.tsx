@@ -14,7 +14,8 @@ import {
 } from "iconsax-reactjs";
 import { InputWithIcon, ButtonWithLoader } from "@/components/ui";
 import { toast } from "sonner";
-import { useWallet } from "@/hooks";
+import { useWallet, useTransactions } from "@/hooks";
+
 
 export default function Wallet() {
   const {
@@ -25,35 +26,16 @@ export default function Wallet() {
     refetch,
   } = useWallet();
 
+  const {
+    transactions,
+    loading: txLoading,
+  } = useTransactions();
+
   const [amount, setAmount] = useState(200);
   const [copied, setCopied] = useState(false);
 
   const accountNumber = "8137411338";
   const accountName = "Gift Uwem Jackson";
-
-  const demoTransactions = [
-    {
-      id: 1,
-      type: "credit",
-      title: "Wallet funding",
-      amount: 3000,
-      date: new Date(),
-    },
-    {
-      id: 2,
-      type: "debit",
-      title: "Airtime purchase",
-      amount: 500,
-      date: new Date(),
-    },
-    {
-      id: 3,
-      type: "credit",
-      title: "Wallet funding",
-      amount: 1000,
-      date: new Date(),
-    },
-  ];
 
   const handleCopy = () => {
     navigator.clipboard.writeText(accountNumber);
@@ -161,11 +143,8 @@ export default function Wallet() {
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex gap-3">
             <InfoCircle size={16} className="text-amber-500 mt-0.5" />
             <p className="text-xs font-medium text-amber-800 leading-relaxed">
-              We are currently using a personal account to avoid VAT and tax
-              fees from Paystack or other third-party platforms. After making
-              payment, kindly click the button below to notify us. Your
-              transaction will be confirmed and your wallet credited
-              immediately.
+              After payment, click the button below to notify us.
+              Your wallet will be credited once confirmed.
             </p>
           </div>
 
@@ -183,7 +162,19 @@ export default function Wallet() {
           <h3 className="font-semibold">Transaction History</h3>
 
           <div className="bg-white rounded-xl border border-line divide-y divide-line">
-            {demoTransactions.map((tx) => (
+            {txLoading && (
+              <div className="p-4 text-sm text-muted">
+                Loading transactions...
+              </div>
+            )}
+
+            {!txLoading && transactions.length === 0 && (
+              <div className="p-4 text-sm text-muted">
+                No transactions yet
+              </div>
+            )}
+
+            {transactions.map((tx) => (
               <div
                 key={tx.id}
                 className="flex items-center justify-between p-4"
@@ -205,10 +196,10 @@ export default function Wallet() {
 
                   <div>
                     <p className="text-sm font-medium capitalize">
-                      {tx.title}
+                      {tx.description}
                     </p>
                     <p className="text-xs text-muted">
-                      {formatDate(tx.date)}
+                      {formatDate(tx.createdAt)}
                     </p>
                   </div>
                 </div>
