@@ -34,7 +34,7 @@ export default function Home() {
     <MainLayout>
       <div className="space-y-1 flex md:items-center justify-between md:flex-row flex-col">
         <h3 className="text-xl font-bold">
-          Hey,{" "}
+          Hey{" "}
           <span className="text-muted">
             {fullName ? fullName.split(" ")[0] : "There"}
           </span>{" "}
@@ -69,19 +69,17 @@ export default function Home() {
       </div>
 
       <div className="bg-amber-50 rounded-xl p-3 flex gap-3">
-        <InfoCircle
-          size={16}
-          className="text-amber-500 mt-0.5 flex-shrink-0"
-        />
+        <InfoCircle size={16} className="text-amber-500 mt-0.5 flex-shrink-0" />
         <p className="text-xs font-medium text-amber-800 leading-relaxed">
           The wallet is used only for airtime gifts. Creating and sharing
-          Valentine cards is completely free; spread the love without limits 💖
+          Valentine cards is completely free.
         </p>
       </div>
 
       <div className="bg-secondary p-2 rounded-2xl space-y-3">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
 
+          {/* Wallet */}
           <div className="bg-white col-span-2 md:col-span-1 rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 center">
@@ -106,6 +104,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Total */}
           <div className="bg-white rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-amber-100 center">
@@ -120,6 +119,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Accepted */}
           <div className="bg-white rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-green-100 center">
@@ -134,6 +134,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Pending */}
           <div className="bg-white rounded-xl p-4 border border-line">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-blue-100 center">
@@ -148,15 +149,18 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Expired */}
           <div className="bg-white rounded-xl p-4 border border-line">
-            <div className="h-10 w-10 rounded-full bg-gray-100 center">
-              <Clock size={20} className="text-gray-500" />
-            </div>
-            <div>
-              <p className="text-muted text-xs">Expired</p>
-              <h4 className="font-bold text-lg">
-                <CountUp start={0} end={stats.expired} duration={1.5} />
-              </h4>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-gray-100 center">
+                <Clock size={20} className="text-gray-500" />
+              </div>
+              <div>
+                <p className="text-muted text-xs">Expired</p>
+                <h4 className="font-bold text-lg">
+                  <CountUp start={0} end={stats.expired} duration={1.5} />
+                </h4>
+              </div>
             </div>
           </div>
 
