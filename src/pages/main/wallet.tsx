@@ -34,8 +34,8 @@ export default function Wallet() {
   const [amount, setAmount] = useState<number>(200);
   const [copied, setCopied] = useState(false);
 
-  const accountNumber = "8137411338";
-  const accountName = "Gift Uwem Jackson";
+  const accountNumber = "6118443686";
+  const accountName = "BULLISH EFEURHOBO";
 
   useEffect(() => {
     refetch();
