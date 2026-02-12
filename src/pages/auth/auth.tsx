@@ -7,8 +7,7 @@ const avatars = [
   "Empire Tech",  
   "Amaka Bello",  
   "Tunde Ajayi",  
-  "Sarah Kim",  
-  "John Doe",  
+  "Sarah Kim", 
 ]  
   
 export default function Auth() {  
