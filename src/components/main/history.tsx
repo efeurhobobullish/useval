@@ -20,6 +20,10 @@ export default function History() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const formatDate = (date: string) => {
+    return new Date(date).toISOString().split("T")[0];
+  };
+
   if (loading) {
     return (
       <div className="bg-secondary p-6 min-h-[260px] center rounded-xl border border-line">
@@ -65,7 +69,7 @@ export default function History() {
               </p>
 
               <p className="text-xs text-muted">
-                {new Date(card.createdAt).toLocaleDateString()} •{" "}
+                {formatDate(card.createdAt)} •{" "}
                 {card.sendAirtime
                   ? `Airtime ₦${card.airtimeAmount}`
                   : "No airtime"}
