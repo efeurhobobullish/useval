@@ -10,7 +10,7 @@ export default function VerifyAccount() {
   const navigate = useNavigate();
   const { verifyOtp, resendOtp } = useAuth();
 
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [digits, setDigits] = useState(["", "", "", ""]);
   const [loading, setLoading] = useState(false);
 
@@ -18,15 +18,15 @@ export default function VerifyAccount() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const value = params.get("phone");
+    const value = params.get("email");
 
     if (!value) {
-      toast.error("Missing phone number");
+      toast.error("Missing email address");
       navigate("/");
       return;
     }
 
-    setPhone(value);
+    setEmail(value);
   }, [navigate]);
 
   const handleChange = (value: string, index: number) => {
@@ -73,7 +73,7 @@ export default function VerifyAccount() {
     try {
       setLoading(true);
 
-      await verifyOtp({ phone, code });
+      await verifyOtp({ email, code });
 
       toast.success("Account verified successfully");
       navigate("/home");
@@ -88,8 +88,8 @@ export default function VerifyAccount() {
 
   const handleResend = async () => {
     try {
-      await resendOtp(phone);
-      toast.success("New verification code sent");
+      await resendOtp(email);
+      toast.success("New verification code sent to your email");
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message || "Unable to resend code"
@@ -104,7 +104,7 @@ export default function VerifyAccount() {
           Enter Verification Code
         </h2>
         <p className="text-sm text-muted">
-          Code sent to {phone} on WhatsApp
+          Code sent to {email}
         </p>
       </div>
 
@@ -133,13 +133,13 @@ export default function VerifyAccount() {
         ))}
       </div>
 
-      <div className="flex gap-2 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+      <div className="flex gap-2 bg-secondary border border-line rounded-lg p-3">
         <LockSlash
           size={18}
           variant="Bulk"
-          className="flex-shrink-0 text-yellow-700"
+          className="flex-shrink-0 text-primary"
         />
-        <p className="text-xs text-yellow-700">
+        <p className="text-xs text-muted">
           This code expires in 5 minutes. Do not share it.
         </p>
       </div>
