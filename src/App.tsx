@@ -10,8 +10,7 @@ import {
   Success,
   Wallet,
 } from "./pages/main";
-
-import Protect from "@/components/Protect";
+import { Protect } from "./pages";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks";
 
