@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import api from "@/config/api";
 
 export type User = {
@@ -26,21 +26,21 @@ const useAuth = () => {
     return res.data;
   };
 
-  /* REQUEST OTP (EMAIL) */
+  /* REQUEST OTP */
   const requestOtp = async (email: string) => {
     setError(null);
     const res = await api.post("/v1/auth/otp/request", { email });
     return res.data;
   };
 
-  /* RESEND OTP (EMAIL) */
+  /* RESEND OTP */
   const resendOtp = async (email: string) => {
     setError(null);
     const res = await api.post("/v1/auth/otp/resend", { email });
     return res.data;
   };
 
-  /* VERIFY OTP + LOGIN (EMAIL) */
+  /* VERIFY OTP + LOGIN */
   const verifyOtp = async (payload: {
     email: string;
     code: string;
@@ -61,18 +61,16 @@ const useAuth = () => {
   };
 
   /* CHECK AUTH */
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
 
       if (!token) {
         setUser(null);
-        setLoading(false);
         return;
       }
 
       const res = await api.get("/v1/auth/check");
-
       setUser(res.data.user);
     } catch {
       localStorage.removeItem("token");
@@ -80,7 +78,7 @@ const useAuth = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   /* LOGOUT */
   const logout = () => {
@@ -90,7 +88,7 @@ const useAuth = () => {
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   return {
     user,
@@ -101,7 +99,7 @@ const useAuth = () => {
     resendOtp,
     verifyOtp,
     logout,
-    refetchAuth: checkAuth,
+    checkAuth, // ✅ FIXED
   };
 };
 
