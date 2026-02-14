@@ -4,6 +4,7 @@ import api from "@/config/api";
 export type User = {
   _id: string;
   fullName: string;
+  email: string;
   phone: string;
   isVerified: boolean;
   isAdmin?: boolean;
@@ -18,29 +19,30 @@ const useAuth = () => {
   const register = async (payload: {
     fullName: string;
     phone: string;
+    email: string;
   }) => {
     setError(null);
     const res = await api.post("/v1/auth/register", payload);
     return res.data;
   };
 
-  /* REQUEST OTP */
-  const requestOtp = async (phone: string) => {
+  /* REQUEST OTP (EMAIL) */
+  const requestOtp = async (email: string) => {
     setError(null);
-    const res = await api.post("/v1/auth/otp/request", { phone });
+    const res = await api.post("/v1/auth/otp/request", { email });
     return res.data;
   };
 
-  /* RESEND OTP */
-  const resendOtp = async (phone: string) => {
+  /* RESEND OTP (EMAIL) */
+  const resendOtp = async (email: string) => {
     setError(null);
-    const res = await api.post("/v1/auth/otp/resend", { phone });
+    const res = await api.post("/v1/auth/otp/resend", { email });
     return res.data;
   };
 
-  /* VERIFY OTP + LOGIN */
+  /* VERIFY OTP + LOGIN (EMAIL) */
   const verifyOtp = async (payload: {
-    phone: string;
+    email: string;
     code: string;
   }) => {
     setError(null);
