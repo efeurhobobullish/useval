@@ -1,5 +1,5 @@
 import type React from "react";
-import { Call, LockSlash } from "iconsax-reactjs";
+import { Sms, LockSlash } from "iconsax-reactjs";
 import { ButtonWithLoader, InputWithIcon } from "../ui";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,24 +11,25 @@ export default function ExistingAccount() {
   const navigate = useNavigate();
   const { requestOtp } = useAuth();
 
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!phone.trim()) {
-      toast.error("Phone number is required");
+    if (!email.trim()) {
+      toast.error("Email is required");
       return;
     }
 
     try {
       setLoading(true);
 
-      await requestOtp(phone);
+      await requestOtp(email);
 
-      toast.success("Verification code sent");
-      navigate(`/verify?phone=${encodeURIComponent(phone)}`);
+      toast.success("Verification code sent to your email");
+
+      navigate(`/verify?email=${encodeURIComponent(email)}`);
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message || "Unable to send verification code"
@@ -41,28 +42,27 @@ export default function ExistingAccount() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <p className="text-muted text-sm">
-        Sign in using your phone number. A verification code will be sent to your
-        WhatsApp.
+        Sign in using your email address. A verification code will be sent to your email.
       </p>
 
       <InputWithIcon
-        icon={<Call size={20} variant="Bulk" />}
-        label="Your number"
-        placeholder="e.g 08000000000"
-        type="tel"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        icon={<Sms size={20} variant="Bulk" />}
+        label="Your email"
+        placeholder="e.g you@example.com"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         className="bg-secondary"
       />
 
-      <div className="flex gap-2 bg-yellow-50 border border-yellow-200 rounded-lg p-2">
+      <div className="flex gap-2 bg-secondary border border-line rounded-lg p-2">
         <LockSlash
           size={17}
           variant="Bulk"
-          className="flex-shrink-0 text-yellow-700"
+          className="flex-shrink-0 text-primary"
         />
-        <p className="text-xs text-yellow-700">
-          A 6 digit verification code will be sent to your WhatsApp number.
+        <p className="text-xs text-muted">
+          A 4 digit verification code will be sent to your email.
         </p>
       </div>
 
