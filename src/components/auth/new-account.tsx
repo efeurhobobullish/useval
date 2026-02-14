@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Call, User, LockSlash } from "iconsax-reactjs";
+import { Call, User, Sms, LockSlash } from "iconsax-reactjs";
 import { toast } from "sonner";
 
 import { useAuth } from "@/hooks";
@@ -13,24 +13,28 @@ export default function NewAccount() {
 
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!fullName.trim() || !phone.trim()) {
-      toast.error("Please enter your name and phone number");
+    if (!fullName.trim() || !phone.trim() || !email.trim()) {
+      toast.error("Please enter your name, phone and email");
       return;
     }
 
     setLoading(true);
 
     try {
-      await register({ fullName, phone });
-      await requestOtp(phone);
+      await register({ fullName, phone, email });
 
-      toast.success("Verification code sent to WhatsApp");
-      navigate(`/verify?phone=${encodeURIComponent(phone)}`);
+      await requestOtp(email);
+
+      toast.success("Verification code sent to your email");
+
+      navigate(`/verify?email=${encodeURIComponent(email)}`);
+
     } catch (error: any) {
       const message =
         error?.response?.data?.message || "Something went wrong";
@@ -43,7 +47,7 @@ export default function NewAccount() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <p className="text-muted text-sm">
-        Create your account with your phone number.
+        Create your account with your details.
       </p>
 
       <InputWithIcon
@@ -57,6 +61,16 @@ export default function NewAccount() {
       />
 
       <InputWithIcon
+        icon={<Sms size={20} variant="Bulk" />}
+        label="Your email"
+        placeholder="e.g you@example.com"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="bg-secondary"
+      />
+
+      <InputWithIcon
         icon={<Call size={20} variant="Bulk" />}
         label="Your number"
         placeholder="e.g 08000000000"
@@ -66,14 +80,14 @@ export default function NewAccount() {
         className="bg-secondary"
       />
 
-      <div className="flex gap-2 bg-yellow-50 border border-yellow-200 rounded-lg p-2">
+      <div className="flex gap-2 bg-secondary border border-line rounded-lg p-2">
         <LockSlash
           size={17}
           variant="Bulk"
-          className="flex-shrink-0 text-yellow-700"
+          className="flex-shrink-0 text-primary"
         />
-        <p className="text-xs text-yellow-700">
-          A 6 digit verification code will be sent to your WhatsApp number.
+        <p className="text-xs text-muted">
+          A 6 digit verification code will be sent to your email address.
         </p>
       </div>
 
