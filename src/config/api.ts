@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_BASE_URL;
+/* ================================
+   BASE CONFIGURATION
+================================ */
+const API_URL = "https://useval-3929a2f721ab.herokuapp.com";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -9,21 +12,36 @@ const api = axios.create({
   },
 });
 
-/* REQUEST INTERCEPTOR */
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+/* ================================
+   REQUEST INTERCEPTOR
+   - Attaches token to headers
+================================ */
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-  return config;
-});
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-/* RESPONSE INTERCEPTOR */
+/* ================================
+   RESPONSE INTERCEPTOR
+   - Handles responses globally
+================================ */
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Optional: Handle 401 globally
+    // if (error.response?.status === 401) {
+    //   localStorage.removeItem("token");
+    //   window.location.href = "/login";
+    // }
+
     return Promise.reject(error);
   }
 );
