@@ -31,8 +31,7 @@ export default function ExistingAccount() {
       navigate(`/verify?phone=${encodeURIComponent(phone)}`);
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.message || "Unable to send verification code"
-      );
+        error?.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -75,4 +74,4 @@ export default function ExistingAccount() {
       />
     </form>
   );
-}
+ }
