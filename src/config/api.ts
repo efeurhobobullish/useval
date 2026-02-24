@@ -3,7 +3,7 @@ import axios from "axios";
 /* ================================
    BASE CONFIGURATION
 ================================ */
-const API_URL = "https://useval-backend-2ab4e507f60f.herokuapp.com";
+const API_URL = "https://useval-backend-6982418bc6a0.herokuapp.com";
 
 const api = axios.create({
   baseURL: API_URL,
