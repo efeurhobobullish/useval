@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import api from "@/config/api";
 
 export type DepositUser = {
@@ -22,22 +23,39 @@ export type Deposit = {
   createdAt: string;
 };
 
+type ApiError = {
+  message?: string;
+};
+
 export function useAdminDeposits() {
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery<
+    Deposit[],
+    AxiosError<ApiError>
+  >({
     queryKey: ["admin", "deposits"],
     queryFn: async () => {
-      const res = await api.get<{ deposits: Deposit[] }>("/v1/admin/deposits");
+      const res = await api.get<{ deposits: Deposit[] }>(
+        "/v1/admin/deposits"
+      );
       return res.data.deposits;
     },
   });
-  return { deposits: data ?? [], loading: isLoading, error, refetch };
+
+  return {
+    deposits: data ?? [],
+    loading: isLoading,
+    error,
+    refetch,
+  };
 }
 
 export function useApproveDeposit() {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (depositId: string) =>
-      api.patch(`/v1/admin/deposits/${depositId}/approve`),
+
+  return useMutation<void, AxiosError<ApiError>, string>({
+    mutationFn: async (depositId: string) => {
+      await api.patch(`/v1/admin/deposits/${depositId}/approve`);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "deposits"] });
       queryClient.invalidateQueries({ queryKey: ["admin", "stats"] });
@@ -47,9 +65,11 @@ export function useApproveDeposit() {
 
 export function useRejectDeposit() {
   const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (depositId: string) =>
-      api.patch(`/v1/admin/deposits/${depositId}/reject`),
+
+  return useMutation<void, AxiosError<ApiError>, string>({
+    mutationFn: async (depositId: string) => {
+      await api.patch(`/v1/admin/deposits/${depositId}/reject`);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "deposits"] });
       queryClient.invalidateQueries({ queryKey: ["admin", "stats"] });
