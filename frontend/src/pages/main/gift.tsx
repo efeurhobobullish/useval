@@ -1,0 +1,156 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { CardLayout } from "@/layouts";
+import {
+  InputWithIcon,
+  SelectWithIcon,
+  ButtonWithLoader,
+} from "@/components/ui";
+import { CallAdd, Wifi } from "iconsax-reactjs";
+import { toast } from "sonner";
+import useValentines from "@/hooks/useValentines";
+import type { Valentine } from "@/hooks/useValentines";
+
+export default function Gift() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const { getByReference, acceptValentine, accepting } = useValentines();
+
+  const [valentine, setValentine] = useState<Valentine | null>(null);
+  const [loadingCard, setLoadingCard] = useState(true);
+
+  const [network, setNetwork] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const isValid =
+    network !== "" &&
+    phone.trim().length >= 10 &&
+    valentine?.sendAirtime === true;
+
+  /* LOAD CARD */
+  useEffect(() => {
+    const loadCard = async () => {
+      if (!id) return;
+
+      try {
+        const data = await getByReference(id);
+        setValentine(data);
+      } catch (error) {
+        setValentine(null);
+      } finally {
+        setLoadingCard(false);
+      }
+    };
+
+    loadCard();
+  }, [id, getByReference]);
+
+  /* SUBMIT */
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!id || !isValid) return;
+
+    try {
+      await acceptValentine(id, {
+        network,
+        phone,
+      });
+
+      toast.success("Airtime sent successfully");
+      navigate(`/card/${id}/success`);
+    } catch (err: any) {
+      toast.error(
+        err?.response?.data?.message || "Failed to send airtime"
+      );
+    }
+  };
+
+  if (loadingCard) {
+    return (
+      <CardLayout>
+        <p className="text-center text-muted">Loading...</p>
+      </CardLayout>
+    );
+  }
+
+  if (!valentine) {
+    return (
+      <CardLayout>
+        <p className="text-center text-muted">
+          Valentine not available
+        </p>
+      </CardLayout>
+    );
+  }
+
+  if (!valentine.sendAirtime) {
+    return (
+      <CardLayout>
+        <p className="text-center text-muted">
+          This card does not include an airtime gift.
+        </p>
+      </CardLayout>
+    );
+  }
+
+  return (
+    <CardLayout>
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-md mx-auto bg-secondary text-left p-6 rounded-xl border border-line space-y-6"
+      >
+        <div className="text-center space-y-2">
+          <h2 className="text-xl font-semibold">
+            Collect your{" "}
+            <span className="text-primary font-bold">
+              ₦{valentine.airtimeAmount}
+            </span>{" "}
+            airtime gift
+          </h2>
+
+          <p className="text-sm text-muted">
+            Select your network and enter your phone number.
+          </p>
+        </div>
+
+        <SelectWithIcon
+          icon={<Wifi size={20} />}
+          label="Network"
+          value={network}
+          className="bg-white"
+          onChange={(e) => setNetwork(e.target.value)}
+          options={[
+            { value: "1", label: "MTN" },
+            { value: "2", label: "GLO" },
+            { value: "3", label: "9Mobile" },
+            { value: "4", label: "Airtel" },
+          ]}
+        />
+
+        <InputWithIcon
+          icon={<CallAdd variant="Bulk" size={20} />}
+          type="tel"
+          label="Phone number"
+          placeholder="08012345678"
+          value={phone}
+          className="bg-white"
+          onChange={(e) => setPhone(e.target.value)}
+        />
+
+        <ButtonWithLoader
+          initialText="I accept your gift"
+          loadingText="Sending gift..."
+          loading={accepting}
+          disabled={!isValid}
+          className="w-full btn-primary h-11 rounded-lg font-semibold"
+        />
+
+        <p className="text-xs text-muted text-center">
+          Airtime will be credited instantly.
+        </p>
+      </form>
+    </CardLayout>
+  );
+}
