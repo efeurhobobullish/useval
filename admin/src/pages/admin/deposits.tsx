@@ -69,8 +69,7 @@ export default function Deposits() {
 
         {loading ? (
           <div className="card flex items-center justify-center py-12">
-            <Loader className="size-8 animate-spin text-primary" aria-hidden />
-            <span className="sr-only">Loading...</span>
+            <Loader className="size-8 animate-spin text-primary" />
           </div>
         ) : deposits.length === 0 ? (
           <div className="card text-center py-12">
@@ -81,79 +80,62 @@ export default function Deposits() {
               No pending deposits
             </h2>
             <p className="section-desc">
-              New funding requests will appear here for you to confirm or reject.
+              New funding requests will appear here.
             </p>
           </div>
         ) : (
           <section className="section">
             <h2 className="section-title">Pending requests</h2>
 
-            {/* Mobile View */}
-            <div className="block md:hidden space-y-4">
+            <div className="space-y-4">
               {deposits.map((d) => {
                 const depositId = d.id ?? d._id ?? "";
 
                 return (
                   <div key={depositId} className="card">
-                    <div className="flex justify-between items-start gap-3 mb-4">
-                      <div className="min-w-0">
-                        <p className="font-semibold text-main">
-                          {d.user?.fullName}
-                        </p>
-                        <p className="text-sm text-muted truncate">
-                          {d.user?.email}
+                    <div className="flex justify-between mb-4">
+                      <div>
+                        <p className="font-semibold">
+                          {d.user.fullName}
                         </p>
                         <p className="text-sm text-muted">
-                          {d.user?.phone}
+                          {d.user.email}
                         </p>
                       </div>
-
-                      <span className="text-lg font-bold text-primary whitespace-nowrap">
+                      <span className="font-bold text-primary">
                         {formatMoney(d.amount)}
                       </span>
                     </div>
 
-                    <div className="text-sm text-muted space-y-1 mb-4 pb-4 border-b border-line">
-                      <p>Ref: {d.reference}</p>
-                      <p>Current: {formatMoney(d.user?.wallet ?? 0)}</p>
-                      <p>
-                        After approval:{" "}
-                        {formatMoney((d.user?.wallet ?? 0) + d.amount)}
-                      </p>
-                      <p>{formatDate(d.createdAt)}</p>
-                    </div>
-
                     <div className="flex gap-3">
                       <button
-                        type="button"
                         onClick={() => handleApprove(depositId)}
                         disabled={
                           approve.isPending || reject.isPending
                         }
-                        className="btn btn-primary flex-1 py-2.5 rounded-lg text-sm font-semibold"
+                        className="btn btn-primary flex-1"
                       >
                         {approve.isPending ? (
                           <Loader className="size-4 animate-spin" />
                         ) : (
                           <>
-                            <CheckCircle size={18} /> Confirm
+                            <CheckCircle size={16} /> Confirm
                           </>
                         )}
                       </button>
 
                       <button
-                        type="button"
                         onClick={() => handleReject(depositId)}
                         disabled={
                           approve.isPending || reject.isPending
                         }
-                        className="btn bg-red-100 text-red-700 flex-1 py-2.5 rounded-lg text-sm font-semibold hover:bg-red-200"
+                        className="btn bg-red-100 text-red-700 flex-1"
                       >
                         {reject.isPending ? (
                           <Loader className="size-4 animate-spin" />
                         ) : (
                           <>
-                            <XCircle size={18} /> Reject
+                            <XCircle size={16} /> Reject
                           </>
                         )}
                       </button>
@@ -161,98 +143,6 @@ export default function Deposits() {
                   </div>
                 );
               })}
-            </div>
-
-            {/* Desktop View */}
-            <div className="hidden md:block overflow-x-auto rounded-xl border border-line bg-white">
-              <table className="w-full min-w-[640px] text-left">
-                <thead>
-                  <tr className="border-b border-line bg-secondary">
-                    <th className="px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">
-                      User
-                    </th>
-                    <th className="px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">
-                      Amount
-                    </th>
-                    <th className="px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide hidden lg:table-cell">
-                      Current
-                    </th>
-                    <th className="px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide hidden lg:table-cell">
-                      Reference
-                    </th>
-                    <th className="px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide">
-                      Date
-                    </th>
-                    <th className="px-4 py-3 text-xs font-semibold text-muted uppercase tracking-wide text-right">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {deposits.map((d) => {
-                    const depositId = d.id ?? d._id ?? "";
-
-                    return (
-                      <tr
-                        key={depositId}
-                        className="border-b border-line last:border-0 hover:bg-secondary/30 transition-colors"
-                      >
-                        <td className="px-4 py-3">
-                          <p className="font-medium text-main">
-                            {d.user?.fullName}
-                          </p>
-                          <p className="text-sm text-muted">
-                            {d.user?.email}
-                          </p>
-                        </td>
-
-                        <td className="px-4 py-3 font-bold text-primary">
-                          {formatMoney(d.amount)}
-                        </td>
-
-                        <td className="px-4 py-3 text-sm text-muted hidden lg:table-cell">
-                          {formatMoney(d.user?.wallet ?? 0)}
-                        </td>
-
-                        <td className="px-4 py-3 text-sm text-muted hidden lg:table-cell font-mono">
-                          {d.reference}
-                        </td>
-
-                        <td className="px-4 py-3 text-sm text-muted">
-                          {formatDate(d.createdAt)}
-                        </td>
-
-                        <td className="px-4 py-3 text-right">
-                          <div className="flex gap-2 justify-end">
-                            <button
-                              type="button"
-                              onClick={() => handleApprove(depositId)}
-                              disabled={
-                                approve.isPending || reject.isPending
-                              }
-                              className="btn btn-primary py-2 px-3 rounded-lg text-xs font-semibold"
-                            >
-                              Confirm
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => handleReject(depositId)}
-                              disabled={
-                                approve.isPending || reject.isPending
-                              }
-                              className="btn bg-red-100 text-red-700 py-2 px-3 rounded-lg text-xs font-semibold hover:bg-red-200"
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
             </div>
           </section>
         )}
