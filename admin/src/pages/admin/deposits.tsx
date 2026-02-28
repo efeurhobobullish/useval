@@ -1,5 +1,9 @@
 import { AdminLayout } from "@/layouts";
-import { useAdminDeposits, useApproveDeposit, useRejectDeposit } from "@/hooks";
+import {
+  useAdminDeposits,
+  useApproveDeposit,
+  useRejectDeposit,
+} from "@/hooks";
 import { Loader, CheckCircle, XCircle, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
@@ -24,18 +28,32 @@ export default function Deposits() {
   const reject = useRejectDeposit();
 
   const handleApprove = (id: string) => {
+    if (!id) return;
+
     approve.mutate(id, {
-      onSuccess: () => toast.success("Deposit approved"),
-      onError: (e: { response?: { data?: { message?: string } } }) =>
-        toast.error(e?.response?.data?.message ?? "Failed to approve"),
+      onSuccess: () => {
+        toast.success("Deposit approved");
+      },
+      onError: (error) => {
+        toast.error(
+          error.response?.data?.message ?? "Failed to approve"
+        );
+      },
     });
   };
 
   const handleReject = (id: string) => {
+    if (!id) return;
+
     reject.mutate(id, {
-      onSuccess: () => toast.success("Deposit rejected"),
-      onError: (e: { response?: { data?: { message?: string } } }) =>
-        toast.error(e?.response?.data?.message ?? "Failed to reject"),
+      onSuccess: () => {
+        toast.success("Deposit rejected");
+      },
+      onError: (error) => {
+        toast.error(
+          error.response?.data?.message ?? "Failed to reject"
+        );
+      },
     });
   };
 
@@ -59,7 +77,9 @@ export default function Deposits() {
             <div className="w-16 h-16 rounded-full bg-secondary center mx-auto mb-4">
               <Wallet className="size-8 text-muted" />
             </div>
-            <h2 className="section-title text-base mb-1">No pending deposits</h2>
+            <h2 className="section-title text-base mb-1">
+              No pending deposits
+            </h2>
             <p className="section-desc">
               New funding requests will appear here for you to confirm or reject.
             </p>
@@ -68,32 +88,48 @@ export default function Deposits() {
           <section className="section">
             <h2 className="section-title">Pending requests</h2>
 
+            {/* Mobile View */}
             <div className="block md:hidden space-y-4">
               {deposits.map((d) => {
                 const depositId = d.id ?? d._id ?? "";
+
                 return (
                   <div key={depositId} className="card">
                     <div className="flex justify-between items-start gap-3 mb-4">
                       <div className="min-w-0">
-                        <p className="font-semibold text-main">{d.user?.fullName}</p>
-                        <p className="text-sm text-muted truncate">{d.user?.email}</p>
-                        <p className="text-sm text-muted">{d.user?.phone}</p>
+                        <p className="font-semibold text-main">
+                          {d.user?.fullName}
+                        </p>
+                        <p className="text-sm text-muted truncate">
+                          {d.user?.email}
+                        </p>
+                        <p className="text-sm text-muted">
+                          {d.user?.phone}
+                        </p>
                       </div>
+
                       <span className="text-lg font-bold text-primary whitespace-nowrap">
                         {formatMoney(d.amount)}
                       </span>
                     </div>
+
                     <div className="text-sm text-muted space-y-1 mb-4 pb-4 border-b border-line">
                       <p>Ref: {d.reference}</p>
                       <p>Current: {formatMoney(d.user?.wallet ?? 0)}</p>
-                      <p>After approval: {formatMoney((d.user?.wallet ?? 0) + d.amount)}</p>
+                      <p>
+                        After approval:{" "}
+                        {formatMoney((d.user?.wallet ?? 0) + d.amount)}
+                      </p>
                       <p>{formatDate(d.createdAt)}</p>
                     </div>
+
                     <div className="flex gap-3">
                       <button
                         type="button"
                         onClick={() => handleApprove(depositId)}
-                        disabled={approve.isPending || reject.isPending}
+                        disabled={
+                          approve.isPending || reject.isPending
+                        }
                         className="btn btn-primary flex-1 py-2.5 rounded-lg text-sm font-semibold"
                       >
                         {approve.isPending ? (
@@ -104,10 +140,13 @@ export default function Deposits() {
                           </>
                         )}
                       </button>
+
                       <button
                         type="button"
                         onClick={() => handleReject(depositId)}
-                        disabled={approve.isPending || reject.isPending}
+                        disabled={
+                          approve.isPending || reject.isPending
+                        }
                         className="btn bg-red-100 text-red-700 flex-1 py-2.5 rounded-lg text-sm font-semibold hover:bg-red-200"
                       >
                         {reject.isPending ? (
@@ -124,6 +163,7 @@ export default function Deposits() {
               })}
             </div>
 
+            {/* Desktop View */}
             <div className="hidden md:block overflow-x-auto rounded-xl border border-line bg-white">
               <table className="w-full min-w-[640px] text-left">
                 <thead>
@@ -148,44 +188,60 @@ export default function Deposits() {
                     </th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {deposits.map((d) => {
                     const depositId = d.id ?? d._id ?? "";
+
                     return (
                       <tr
                         key={depositId}
                         className="border-b border-line last:border-0 hover:bg-secondary/30 transition-colors"
                       >
                         <td className="px-4 py-3">
-                          <p className="font-medium text-main">{d.user?.fullName}</p>
-                          <p className="text-sm text-muted">{d.user?.email}</p>
+                          <p className="font-medium text-main">
+                            {d.user?.fullName}
+                          </p>
+                          <p className="text-sm text-muted">
+                            {d.user?.email}
+                          </p>
                         </td>
+
                         <td className="px-4 py-3 font-bold text-primary">
                           {formatMoney(d.amount)}
                         </td>
+
                         <td className="px-4 py-3 text-sm text-muted hidden lg:table-cell">
                           {formatMoney(d.user?.wallet ?? 0)}
                         </td>
+
                         <td className="px-4 py-3 text-sm text-muted hidden lg:table-cell font-mono">
                           {d.reference}
                         </td>
+
                         <td className="px-4 py-3 text-sm text-muted">
                           {formatDate(d.createdAt)}
                         </td>
+
                         <td className="px-4 py-3 text-right">
                           <div className="flex gap-2 justify-end">
                             <button
                               type="button"
                               onClick={() => handleApprove(depositId)}
-                              disabled={approve.isPending || reject.isPending}
+                              disabled={
+                                approve.isPending || reject.isPending
+                              }
                               className="btn btn-primary py-2 px-3 rounded-lg text-xs font-semibold"
                             >
                               Confirm
                             </button>
+
                             <button
                               type="button"
                               onClick={() => handleReject(depositId)}
-                              disabled={approve.isPending || reject.isPending}
+                              disabled={
+                                approve.isPending || reject.isPending
+                              }
                               className="btn bg-red-100 text-red-700 py-2 px-3 rounded-lg text-xs font-semibold hover:bg-red-200"
                             >
                               Reject
