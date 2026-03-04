@@ -4,7 +4,7 @@ import axios from "axios";
    BASE CONFIGURATION
 ================================ */
 const API_URL =
-  import.meta.env.VITE_API_URL 
+  import.meta.env.VITE_API_URL || "https://useval-server-055c576709f8.herokuapp.com"
 
 const api = axios.create({
   baseURL: API_URL,
