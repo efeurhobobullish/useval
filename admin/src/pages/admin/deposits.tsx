@@ -34,9 +34,9 @@ export default function Deposits() {
       onSuccess: () => {
         toast.success("Deposit approved");
       },
-      onError: (error) => {
+      onError: (error: any) => {
         toast.error(
-          error.response?.data?.message ?? "Failed to approve"
+          error?.response?.data?.message ?? "Failed to approve"
         );
       },
     });
@@ -49,9 +49,9 @@ export default function Deposits() {
       onSuccess: () => {
         toast.success("Deposit rejected");
       },
-      onError: (error) => {
+      onError: (error: any) => {
         toast.error(
-          error.response?.data?.message ?? "Failed to reject"
+          error?.response?.data?.message ?? "Failed to reject"
         );
       },
     });
@@ -101,7 +101,15 @@ export default function Deposits() {
                         <p className="text-sm text-muted">
                           {d.user.email}
                         </p>
+
+                        {/* DATE ADDED HERE */}
+                        {d.createdAt && (
+                          <p className="text-xs text-muted mt-1">
+                            {formatDate(d.createdAt)}
+                          </p>
+                        )}
                       </div>
+
                       <span className="font-bold text-primary">
                         {formatMoney(d.amount)}
                       </span>
